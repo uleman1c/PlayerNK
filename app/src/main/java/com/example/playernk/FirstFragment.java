@@ -1,5 +1,8 @@
 package com.example.playernk;
 
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,35 +57,69 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-
                 String url = "http://188.120.243.243:3001/";
-                final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, //GET - API-запрос для получение данных
-                        url, null, new Response.Listener<JSONObject>() {
+                VolleyRequestQueue.executeRequest(getContext(), url, new JsonCallback() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void CallbackObject(JSONObject response) {
 
                         String nameSong = "";
+                        String idSong = "";
                         try {
 
                             JSONArray songs = response.getJSONArray("rows");
 
-                            nameSong = String.valueOf(songs.get(0).toString());
+                            JSONObject song = songs.getJSONObject(0);
+
+                            nameSong = song.getString("name");
+                            idSong = song.getString("id");
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
 
                         binding.textviewNameSong.setText(nameSong);
 
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setAudioAttributes(
+                                new AudioAttributes.Builder()
+                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                                        .build()
+                        );
+                        try {
+                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + idSong));
+                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
+                            mediaPlayer.start();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }, new Response.ErrorListener() { // в случае возникновеня ошибки
+
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
+                    public void CallbackArray(JSONArray jsonArray) {
+
                     }
                 });
 
-                requestQueue.add(request);
+//                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+//
+//                final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, //GET - API-запрос для получение данных
+//                        url, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//
+//
+//
+//
+//                    }
+//                }, new Response.ErrorListener() { // в случае возникновеня ошибки
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        error.printStackTrace();
+//                    }
+//                });
+//
+//                requestQueue.add(request);
 
 
 
