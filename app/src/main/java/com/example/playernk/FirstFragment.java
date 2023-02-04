@@ -1,12 +1,17 @@
 package com.example.playernk;
 
+import static android.content.Context.AUDIO_SERVICE;
+
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,6 +42,10 @@ public class FirstFragment extends Fragment {
 
     private JSONArray songs;
 
+    MediaPlayer mediaPlayer;
+    AudioManager am;
+    CheckBox chbLoop;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -53,7 +62,18 @@ public class FirstFragment extends Fragment {
 
         songs = new JSONArray();
 
-        binding.buttonPlay.setOnClickListener(new View.OnClickListener() {
+        am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
+        chbLoop = binding.chbLoop;
+        chbLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                if (mediaPlayer != null)
+                    mediaPlayer.setLooping(isChecked);
+            }
+        });
+
+        binding.btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -79,7 +99,7 @@ public class FirstFragment extends Fragment {
 
                         binding.textviewNameSong.setText(nameSong);
 
-                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        mediaPlayer = new MediaPlayer();
                         mediaPlayer.setAudioAttributes(
                                 new AudioAttributes.Builder()
                                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -101,32 +121,65 @@ public class FirstFragment extends Fragment {
                     }
                 });
 
-//                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-//
-//                final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, //GET - API-запрос для получение данных
-//                        url, null, new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//
-//
-//
-//
-//                    }
-//                }, new Response.ErrorListener() { // в случае возникновеня ошибки
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                    }
-//                });
-//
-//                requestQueue.add(request);
-
-
 
 //                NavHostFragment.findNavController(FirstFragment.this)
 //                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
+
+        binding.btnPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mediaPlayer.isPlaying())
+                    mediaPlayer.pause();
+            }
+        });
+
+        binding.btnResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mediaPlayer.isPlaying())
+                    mediaPlayer.start();
+
+            }
+        });
+
+        binding.btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.stop();
+            }
+        });
+
+        binding.btnBackward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 3000);
+            }
+        });
+
+        binding.btnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 3000);
+            }
+        });
+
+        binding.btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                binding.textViewSongInfo.setText(
+                        "Playing " + mediaPlayer.isPlaying()
+                        + ", Time " + mediaPlayer.getCurrentPosition() + " / "
+                                + mediaPlayer.getDuration()
+                        + ", Looping " + mediaPlayer.isLooping()
+                        + ", Volume " + am.getStreamVolume(AudioManager.STREAM_MUSIC)
+                );
+
+            }
+        });
+
     }
 
     @Override

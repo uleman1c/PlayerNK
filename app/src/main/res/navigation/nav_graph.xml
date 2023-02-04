@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.playernk.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="Player"
         tools:layout="@layout/fragment_first">
 
         <action
