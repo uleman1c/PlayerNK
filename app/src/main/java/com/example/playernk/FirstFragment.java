@@ -46,6 +46,10 @@ public class FirstFragment extends Fragment {
     AudioManager am;
     CheckBox chbLoop;
 
+    int curSongIndex;
+
+    String url;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -62,8 +66,34 @@ public class FirstFragment extends Fragment {
 
         songs = new JSONArray();
 
+        url = "http://188.120.243.243:3001/";
+
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
         chbLoop = binding.chbLoop;
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+                curSongIndex = curSongIndex + 1;
+
+                if (curSongIndex >= songs.length()){
+                    curSongIndex = 0;
+                }
+
+                PlaySong();
+
+            }
+        });
+
         chbLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
@@ -77,53 +107,11 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String url = "http://188.120.243.243:3001/";
-                VolleyRequestQueue.executeRequest(getContext(), url, new JsonCallback() {
-                    @Override
-                    public void CallbackObject(JSONObject response) {
+                curSongIndex = 0;
 
-                        String nameSong = "";
-                        String idSong = "";
-                        try {
-
-                            JSONArray songs = response.getJSONArray("rows");
-
-                            JSONObject song = songs.getJSONObject(0);
-
-                            nameSong = song.getString("name");
-                            idSong = song.getString("id");
-
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        binding.textviewNameSong.setText(nameSong);
-
-                        mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setAudioAttributes(
-                                new AudioAttributes.Builder()
-                                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                                        .build()
-                        );
-                        try {
-                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + idSong));
-                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
-                            mediaPlayer.start();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-                    @Override
-                    public void CallbackArray(JSONArray jsonArray) {
-
-                    }
-                });
+                PlaySong();
 
 
-//                NavHostFragment.findNavController(FirstFragment.this)
-//                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
 
@@ -180,12 +168,69 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        UpdateSongs();
+
+    }
+
+    private void PlaySong() {
+        String nameSong = "";
+        String idSong = "";
+        try {
+
+            JSONObject song = songs.getJSONObject(curSongIndex);
+
+            nameSong = song.getString("name");
+            idSong = song.getString("id");
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        binding.textviewNameSong.setText(nameSong);
+
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + idSong));
+            mediaPlayer.prepare(); // might take long! (for buffering, etc)
+            mediaPlayer.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void UpdateSongs(){
+
+        songs = new JSONArray();
+
+        VolleyRequestQueue.executeRequest(getContext(), url, new JsonCallback() {
+            @Override
+            public void CallbackObject(JSONObject response) {
+
+                try {
+                    songs = response.getJSONArray("rows");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            @Override
+            public void CallbackArray(JSONArray jsonArray) {
+
+            }
+        });
+
+
+//                NavHostFragment.findNavController(FirstFragment.this)
+//                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+
+
+
     }
 
 }
