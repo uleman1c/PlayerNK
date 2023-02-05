@@ -115,6 +115,42 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                curSongIndex = curSongIndex + 1;
+
+                if (curSongIndex == songs.length()){
+
+                    curSongIndex = 0;
+
+                }
+
+                PlaySong();
+
+
+            }
+        });
+
+        binding.btnPred.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                curSongIndex = curSongIndex - 1;
+
+                if (curSongIndex == -1){
+
+                    curSongIndex = songs.length() - 1;
+
+                }
+
+                PlaySong();
+
+
+            }
+        });
+
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
