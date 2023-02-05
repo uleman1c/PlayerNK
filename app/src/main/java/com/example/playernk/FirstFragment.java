@@ -348,7 +348,7 @@ public class FirstFragment extends Fragment {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
     }
 
