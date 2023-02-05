@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 public class Song {
 
-    public String id, name, ext;
+    public String id, name, ext, style, description;
 
-    public Song(String id, String name, String ext) {
+    public Song(String id, String name, String ext, String style, String description) {
         this.id = id;
         this.name = name;
         this.ext = ext;
+        this.style = style;
+        this.description = description;
     }
 
 
@@ -23,7 +25,9 @@ public class Song {
         return new Song(
                 DefaultJson.getString(jsonObject, "id", ""),
                 DefaultJson.getString(jsonObject, "name", ""),
-                DefaultJson.getString(jsonObject, "ext", "")
+                DefaultJson.getString(jsonObject, "ext", ""),
+                DefaultJson.getString(jsonObject, "style", ""),
+                DefaultJson.getString(jsonObject, "description", "")
                 );
 
     }

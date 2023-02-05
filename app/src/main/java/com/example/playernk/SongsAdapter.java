@@ -24,12 +24,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
 
         private TextView tvNumberDate;
         private TextView tvDescription;
-        private TextView tvStatus;
+        private TextView tvStyle;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvStyle = (TextView) itemView.findViewById(R.id.tvStyle);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,6 +85,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         Song song = items.get(position);
 
         holder.tvDescription.setText(song.name + "." + song.ext);
+        holder.tvStyle.setText(song.style);
 
 
 
