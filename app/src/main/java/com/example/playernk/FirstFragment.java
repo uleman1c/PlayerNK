@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FirstFragment extends Fragment {
 
@@ -49,9 +53,18 @@ public class FirstFragment extends Fragment {
     AudioManager am;
     CheckBox chbLoop;
 
+    Boolean aquare, startPlay;
+
+    Date lastStart;
+
     int curSongIndex;
 
     String url;
+
+    TimerTask timerTask;
+    Timer timer;
+
+    Handler handler;
 
     @Override
     public View onCreateView(
@@ -72,6 +85,9 @@ public class FirstFragment extends Fragment {
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
         chbLoop = binding.chbLoop;
 
+        aquare = false;
+        startPlay = false;
+
         songs = new ArrayList<>();
         songsAdapter = new SongsAdapter(getContext(), songs);
 
@@ -88,37 +104,26 @@ public class FirstFragment extends Fragment {
             }
         });
 
-
-
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-
-                curSongIndex = curSongIndex + 1;
-
-                if (curSongIndex >= songs.size()){
-                    curSongIndex = 0;
-                }
-
-                PlaySong();
-
-            }
-        });
-
         chbLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
                 if (mediaPlayer != null)
                     mediaPlayer.setLooping(isChecked);
+            }
+        });
+
+        binding.btnAquare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                aquare = true;
+
+//                curSongIndex = 0;
+//
+                PlaySong();
+
+
             }
         });
 
@@ -138,15 +143,7 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                curSongIndex = curSongIndex + 1;
-
-                if (curSongIndex == songs.size()){
-
-                    curSongIndex = 0;
-
-                }
-
-                PlaySong();
+                NextSong();
 
 
             }
@@ -190,6 +187,9 @@ public class FirstFragment extends Fragment {
         binding.btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                aquare = false;
+
                 mediaPlayer.stop();
             }
         });
@@ -223,23 +223,142 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        timerTask = new TimerTask(){
+
+            @Override
+            public void run() {
+
+                NextSong();
+
+            }
+        };
+
+//        timer = new Timer("Timer");
+//
+//        long delay = 10000L;
+//        timer.schedule(timerTask, delay);
+
+
+        handler = new Handler();
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+
+                handler.post(nextSong);
+
+            }
+        });
+        t.start();
+
+
+
         UpdateSongs();
 
     }
 
+    final Runnable nextSong = new Runnable() {
+        public void run() {
+
+            Date curDate = new Date();
+            if (aquare && lastStart != null
+                    && curDate.getTime()-lastStart.getTime() > 60000) {
+
+
+
+                NextSong();
+
+            }
+
+            handler.postDelayed(nextSong, 3000);
+
+        }
+    };
+
+
+
+    private void NextSong() {
+        curSongIndex = curSongIndex + 1;
+
+        if (curSongIndex == songs.size()){
+
+            curSongIndex = 0;
+
+        }
+
+        PlaySong();
+    }
+
     private void PlaySong() {
+
+        PlaySong(0);
+
+    }
+
+    private void PlaySong(int seekTo) {
 
         Song curSong = songs.get(curSongIndex);
 
-        binding.textviewNameSong.setText(curSong.name);
+        //binding.textviewNameSong.setText(curSong.name);
+
+        releaseMP();
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+                curSongIndex = curSongIndex + 1;
+
+                if (curSongIndex >= songs.size()){
+                    curSongIndex = 0;
+                }
+
+                PlaySong();
+
+            }
+        });
+
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+
+                mediaPlayer.start();
+
+                if (aquare){
+
+                    mediaPlayer.seekTo(Math.toIntExact(30000));
+
+                    lastStart = new Date();
+
+                }
+            }
+        });
+
 
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
             mediaPlayer.prepare(); // might take long! (for buffering, etc)
-            mediaPlayer.start();
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void releaseMP() {
+        if (mediaPlayer != null){
+
+            mediaPlayer.release();
+
+            mediaPlayer = null;
+
         }
     }
 
@@ -247,6 +366,9 @@ public class FirstFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        releaseMP();
+
     }
 
     public void UpdateSongs(){
