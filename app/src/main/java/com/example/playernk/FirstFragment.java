@@ -32,15 +32,18 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
 
-    private JSONArray songs;
+    private ArrayList<Song> songs;
+    private SongsAdapter songsAdapter;
 
     MediaPlayer mediaPlayer;
     AudioManager am;
@@ -64,12 +67,28 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        songs = new JSONArray();
-
         url = "http://188.120.243.243:3001/";
 
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
         chbLoop = binding.chbLoop;
+
+        songs = new ArrayList<>();
+        songsAdapter = new SongsAdapter(getContext(), songs);
+
+        binding.rvList.setAdapter(songsAdapter);
+
+        songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Song song) {
+
+                curSongIndex = songs.indexOf(song);
+
+                PlaySong();
+
+            }
+        });
+
+
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioAttributes(
@@ -85,7 +104,7 @@ public class FirstFragment extends Fragment {
 
                 curSongIndex = curSongIndex + 1;
 
-                if (curSongIndex >= songs.length()){
+                if (curSongIndex >= songs.size()){
                     curSongIndex = 0;
                 }
 
@@ -121,7 +140,7 @@ public class FirstFragment extends Fragment {
 
                 curSongIndex = curSongIndex + 1;
 
-                if (curSongIndex == songs.length()){
+                if (curSongIndex == songs.size()){
 
                     curSongIndex = 0;
 
@@ -141,7 +160,7 @@ public class FirstFragment extends Fragment {
 
                 if (curSongIndex == -1){
 
-                    curSongIndex = songs.length() - 1;
+                    curSongIndex = songs.size() - 1;
 
                 }
 
@@ -209,23 +228,14 @@ public class FirstFragment extends Fragment {
     }
 
     private void PlaySong() {
-        String nameSong = "";
-        String idSong = "";
-        try {
 
-            JSONObject song = songs.getJSONObject(curSongIndex);
+        Song curSong = songs.get(curSongIndex);
 
-            nameSong = song.getString("name");
-            idSong = song.getString("id");
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        binding.textviewNameSong.setText(nameSong);
+        binding.textviewNameSong.setText(curSong.name);
 
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + idSong));
+            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
             mediaPlayer.prepare(); // might take long! (for buffering, etc)
             mediaPlayer.start();
         } catch (IOException e) {
@@ -241,17 +251,23 @@ public class FirstFragment extends Fragment {
 
     public void UpdateSongs(){
 
-        songs = new JSONArray();
+        songs.clear();
 
         VolleyRequestQueue.executeRequest(getContext(), url, new JsonCallback() {
             @Override
             public void CallbackObject(JSONObject response) {
 
                 try {
-                    songs = response.getJSONArray("rows");
+                    Song.getFromJsonArray(songs, response.getJSONArray("rows"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+
+
+
+
+
+                songsAdapter.notifyDataSetChanged();
 
             }
 
