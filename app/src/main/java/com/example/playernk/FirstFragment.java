@@ -15,7 +15,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.volley.Request;
@@ -66,6 +71,24 @@ public class FirstFragment extends Fragment {
 
     Handler handler;
 
+
+    // https://developer.android.com/guide/fragments/communicate
+
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                // We use a String here, but any type that can be put in a Bundle is supported
+                String result = bundle.getString("bundleKey");
+                // Do something with the result
+            }
+        });
+    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -79,6 +102,8 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+//        ViewModelProvider viewModelProvider = new ViewModelProvider(this)
 
         url = "http://188.120.243.243:3001/";
 
@@ -100,6 +125,18 @@ public class FirstFragment extends Fragment {
                 curSongIndex = songs.indexOf(song);
 
                 PlaySong();
+
+            }
+        });
+
+        binding.btnStyle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.StyleFragment);
+
+
 
             }
         });
@@ -398,11 +435,6 @@ public class FirstFragment extends Fragment {
 
             }
         });
-
-
-//                NavHostFragment.findNavController(FirstFragment.this)
-//                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-
 
 
     }

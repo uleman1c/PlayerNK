@@ -9,20 +9,10 @@
         android:id="@+id/FirstFragment"
         android:name="com.example.playernk.FirstFragment"
         android:label="Player"
-        tools:layout="@layout/fragment_first">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_first"/>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.playernk.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+        android:id="@+id/StyleFragment"
+        android:name="com.example.playernk.StyleFragment"
+        android:label="Style"
+        tools:layout="@layout/fragment_second"/>
 </navigation>

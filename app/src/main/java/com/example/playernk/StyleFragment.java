@@ -11,7 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.playernk.databinding.FragmentSecondBinding;
 
-public class SecondFragment extends Fragment {
+public class StyleFragment extends Fragment {
 
     private FragmentSecondBinding binding;
 
@@ -32,10 +32,20 @@ public class SecondFragment extends Fragment {
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                Bundle result = new Bundle();
+                result.putString("bundleKey", "result");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+
+                NavHostFragment.findNavController(StyleFragment.this).popBackStack();
             }
         });
+
+
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
     }
 
     @Override
