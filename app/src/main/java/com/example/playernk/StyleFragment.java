@@ -11,9 +11,17 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.playernk.databinding.FragmentSecondBinding;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 public class StyleFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private ArrayList<Style> styles;
+    private StylesAdapter stylesAdapter;
 
     @Override
     public View onCreateView(
@@ -29,24 +37,59 @@ public class StyleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+        styles = new ArrayList<>();
+        stylesAdapter = new StylesAdapter(getContext(), styles);
+
+        binding.rvList.setAdapter(stylesAdapter);
+
+        stylesAdapter.setOnItemClickListener(new StylesAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(Style style) {
+
                 Bundle result = new Bundle();
-                result.putString("bundleKey", "result");
-                getParentFragmentManager().setFragmentResult("requestKey", result);
+                result.putString("style", style.name);
+                getParentFragmentManager().setFragmentResult("selectStyle", result);
 
                 NavHostFragment.findNavController(StyleFragment.this).popBackStack();
+
+            }
+        });
+
+        UpdateStyles();
+
+    }
+
+    public void UpdateStyles(){
+
+        styles.clear();
+
+        VolleyRequestQueue.executeRequest(getContext(), Conn.addr + "styles", new JsonCallback() {
+            @Override
+            public void CallbackObject(JSONObject response) {
+
+                try {
+                    Style.getFromJsonArray(styles, response.getJSONArray("rows"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+
+
+                stylesAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void CallbackArray(JSONArray jsonArray) {
+
             }
         });
 
 
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            }
-//        });
     }
+
 
     @Override
     public void onDestroyView() {

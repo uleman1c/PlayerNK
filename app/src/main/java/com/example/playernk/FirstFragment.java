@@ -17,31 +17,16 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.playernk.databinding.FragmentFirstBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -71,20 +56,64 @@ public class FirstFragment extends Fragment {
 
     Handler handler;
 
-
-    // https://developer.android.com/guide/fragments/communicate
-
-
+    GetSongSettings getSongSettings;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+
+        url = Conn.addr;
+
+        aquare = false;
+        startPlay = false;
+
+        songs = new ArrayList<>();
+        songsAdapter = new SongsAdapter(getContext(), songs);
+
+        timerTask = new TimerTask(){
+
+            @Override
+            public void run() {
+
+                NextSong();
+
+            }
+        };
+
+//        timer = new Timer("Timer");
+//
+//        long delay = 10000L;
+//        timer.schedule(timerTask, delay);
+
+
+        handler = new Handler();
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+
+                handler.post(nextSong);
+
+            }
+        });
+        t.start();
+
+        getSongSettings = new GetSongSettings(new ArrayList<>());
+
+        UpdateSongs();
+
+
+
+
+        getParentFragmentManager().setFragmentResultListener("selectStyle", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported
-                String result = bundle.getString("bundleKey");
-                // Do something with the result
+
+                String style = bundle.getString("style");
+
+                getSongSettings.styles.clear();
+                getSongSettings.styles.add(style);
+
+                UpdateSongs();
+
             }
         });
     }
@@ -103,18 +132,8 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        ViewModelProvider viewModelProvider = new ViewModelProvider(this)
-
-        url = "http://188.120.243.243:3001/";
-
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
         chbLoop = binding.chbLoop;
-
-        aquare = false;
-        startPlay = false;
-
-        songs = new ArrayList<>();
-        songsAdapter = new SongsAdapter(getContext(), songs);
 
         binding.rvList.setAdapter(songsAdapter);
 
@@ -260,36 +279,6 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        timerTask = new TimerTask(){
-
-            @Override
-            public void run() {
-
-                NextSong();
-
-            }
-        };
-
-//        timer = new Timer("Timer");
-//
-//        long delay = 10000L;
-//        timer.schedule(timerTask, delay);
-
-
-        handler = new Handler();
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-
-                handler.post(nextSong);
-
-            }
-        });
-        t.start();
-
-
-
-        UpdateSongs();
-
     }
 
     final Runnable nextSong = new Runnable() {
@@ -412,7 +401,8 @@ public class FirstFragment extends Fragment {
 
         songs.clear();
 
-        VolleyRequestQueue.executeRequest(getContext(), url, new JsonCallback() {
+        VolleyRequestQueue.executeRequest(getContext(), url + (getSongSettings.styles.size() == 0 ? "" : "?style=" + getSongSettings.styles.get(0)),
+                new JsonCallback() {
             @Override
             public void CallbackObject(JSONObject response) {
 

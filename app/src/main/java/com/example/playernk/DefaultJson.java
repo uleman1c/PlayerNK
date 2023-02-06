@@ -12,7 +12,7 @@ public class DefaultJson {
         try {
             result = jsonObject.getString(key);
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
         }
 
         return result;
