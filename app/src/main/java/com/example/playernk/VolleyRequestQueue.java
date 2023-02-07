@@ -19,8 +19,45 @@ public class VolleyRequestQueue {
 
         RequestQueue requestQueue = Volley.newRequestQueue(ctx);
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("appId", DB.getDbConstant(ctx,"appId"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, //GET - API-запрос для получение данных
-                url, null, new Response.Listener<JSONObject>() {
+                url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                jsonCallback.CallbackObject(response);
+
+            }
+        }, new Response.ErrorListener() { // в случае возникновеня ошибки
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        requestQueue.add(request);
+
+    }
+
+    public static void executeRequestPost(Context ctx, String url, JsonCallback jsonCallback){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(ctx);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("appId", DB.getDbConstant(ctx,"appId"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 

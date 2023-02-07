@@ -366,16 +366,37 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id,
+                new JsonCallback() {
+                    @Override
+                    public void CallbackObject(JSONObject response) {
 
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
-            mediaPlayer.prepare(); // might take long! (for buffering, etc)
+//                        try {
+//                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
+//                        } catch (JSONException e) {
+//                            throw new RuntimeException(e);
+//                        }
+
+                        try {
+                            mediaPlayer.reset();
+                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
+                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 
-        } catch (IOException e) {
-            //throw new RuntimeException(e);
-        }
+                        } catch (IOException e) {
+                            //throw new RuntimeException(e);
+                        }
+
+                    }
+
+                    @Override
+                    public void CallbackArray(JSONArray jsonArray) {
+
+                    }
+                });
+
+
+
     }
 
     private void releaseMP() {
