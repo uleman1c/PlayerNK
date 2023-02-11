@@ -87,6 +87,13 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         holder.tvDescription.setText(song.name + "." + song.ext);
         holder.tvStyle.setText(song.style);
 
+        if (song.nowPlaying){
+            holder.tvStyle.setBackgroundColor(Color.parseColor("#3CB371"));
+        } else {
+            holder.tvStyle.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+        }
+
 
 
     }

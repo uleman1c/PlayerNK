@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.playernk.databinding.FragmentFirstBinding;
 
@@ -57,6 +58,8 @@ public class FirstFragment extends Fragment {
     Handler handler;
 
     GetSongSettings getSongSettings;
+
+    RecyclerView rvList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,7 +138,9 @@ public class FirstFragment extends Fragment {
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
         chbLoop = binding.chbLoop;
 
-        binding.rvList.setAdapter(songsAdapter);
+        rvList = binding.rvList;
+
+        rvList.setAdapter(songsAdapter);
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
@@ -323,6 +328,17 @@ public class FirstFragment extends Fragment {
 
         Song curSong = songs.get(curSongIndex);
 
+        for (Song song: songs
+             ) {
+            song.nowPlaying = false;
+        }
+
+        curSong.nowPlaying = true;
+
+        songsAdapter.notifyDataSetChanged();
+
+        rvList.scrollToPosition(curSongIndex == 0 ? 0 : curSongIndex + 3);
+
         //binding.textviewNameSong.setText(curSong.name);
 
         releaseMP();
@@ -365,6 +381,7 @@ public class FirstFragment extends Fragment {
                 }
             }
         });
+
 
         VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id,
                 new JsonCallback() {
@@ -422,8 +439,18 @@ public class FirstFragment extends Fragment {
 
         songs.clear();
 
-        VolleyRequestQueue.executeRequest(getContext(), url + (getSongSettings.styles.size() == 0 ? "" : "?style=" + getSongSettings.styles.get(0)),
-                new JsonCallback() {
+        Boolean newOnly = true;
+
+        JSONObject params = new JSONObject();
+        DefaultJson.put(params,"limit", 200);
+        DefaultJson.put(params,"random", true);
+        DefaultJson.put(params,"newOnly", newOnly);
+
+        setFilter(params, newOnly);
+
+        setOrder(params);
+
+        VolleyRequestQueue.executeRequestPost(getContext(), url + "files", params, new JsonCallback() {
             @Override
             public void CallbackObject(JSONObject response) {
 
@@ -447,6 +474,62 @@ public class FirstFragment extends Fragment {
             }
         });
 
+
+//        VolleyRequestQueue.executeRequest(getContext(), url + (getSongSettings.styles.size() == 0 ? "" : "?style=" + getSongSettings.styles.get(0)),
+//                new JsonCallback() {
+//            @Override
+//            public void CallbackObject(JSONObject response) {
+//
+//                try {
+//                    Song.getFromJsonArray(songs, response.getJSONArray("rows"));
+//                } catch (JSONException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//
+//
+//
+//
+//                songsAdapter.notifyDataSetChanged();
+//
+//            }
+//
+//            @Override
+//            public void CallbackArray(JSONArray jsonArray) {
+//
+//            }
+//        });
+//
+
+    }
+
+    private void setFilter(JSONObject params, Boolean newOnly) {
+
+        JSONArray jsonArray = new JSONArray();
+
+        if (newOnly){
+            jsonArray.put(" requests.song_id is null ");
+
+        }
+
+
+        if (getSongSettings.styles.size() > 0) {
+
+            jsonArray.put(" style = '" + getSongSettings.styles.get(0) + "'");
+
+        }
+
+        DefaultJson.put(params,"where", jsonArray.toString() );
+    }
+
+    private void setOrder(JSONObject params) {
+
+
+            JSONArray jsonArray = new JSONArray();
+
+            jsonArray.put(" name  ");
+
+            DefaultJson.put(params,"order", jsonArray.toString() );
 
     }
 
