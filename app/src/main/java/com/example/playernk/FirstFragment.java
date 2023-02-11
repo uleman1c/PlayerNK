@@ -2,6 +2,7 @@ package com.example.playernk;
 
 import static android.content.Context.AUDIO_SERVICE;
 
+import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -172,6 +173,8 @@ public class FirstFragment extends Fragment {
 
         rvList.setAdapter(songsAdapter);
 
+        binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Song song) {
@@ -208,11 +211,19 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                aquare = true;
+                aquare = !aquare;
 
-//                curSongIndex = 0;
-//
-                PlaySong();
+                DB db = new DB(getContext());
+
+                db.open();
+
+                db.updateConstant("aquare", aquare ? "true" : "false");
+
+                db.close();
+
+                binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+
+                //PlaySong();
 
 
             }
