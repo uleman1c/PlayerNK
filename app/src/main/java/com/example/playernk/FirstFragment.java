@@ -45,7 +45,7 @@ public class FirstFragment extends Fragment {
     AudioManager am;
     CheckBox chbLoop;
 
-    Boolean aquare, random, startPlay, newOnly;
+    Boolean aquare, random, startPlay, newOnly, favorites;
 
     Date lastStart;
 
@@ -79,6 +79,8 @@ public class FirstFragment extends Fragment {
         random = db.getConstant("random").equals("true");
 
         newOnly = db.getConstant("newOnly").equals("true");
+
+        favorites = db.getConstant("favorites").equals("true");
 
         aquare = db.getConstant("aquare").equals("true");
 
@@ -174,6 +176,7 @@ public class FirstFragment extends Fragment {
         rvList.setAdapter(songsAdapter);
 
         binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+        binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
@@ -338,9 +341,32 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                favorites = !favorites;
+
+                DB db = new DB(getContext());
+
+                db.open();
+
+                db.updateConstant("favorites", favorites ? "true" : "false");
+
+                db.close();
+
+                UpdateSongs();
+
+                binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+
+
+            }
+        });
+
+        binding.btnFavorites.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.FavoritesFragment);
 
+                return false;
             }
         });
 
@@ -544,6 +570,7 @@ public class FirstFragment extends Fragment {
         DefaultJson.put(params,"limit", 200);
         DefaultJson.put(params,"random", random);
         DefaultJson.put(params,"newOnly", newOnly);
+        DefaultJson.put(params,"favorites", favorites);
 
         setFilter(params, newOnly);
 

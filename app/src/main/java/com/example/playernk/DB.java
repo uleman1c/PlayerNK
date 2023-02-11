@@ -499,6 +499,14 @@ public class DB {
 
         }
 
+        String favorites = db.getConstant("favorites");
+        if (favorites == null) {
+
+            favorites = "false";
+            db.updateConstant("favorites", favorites);
+
+        }
+
         String aquare = db.getConstant("aquare");
         if (aquare == null) {
 

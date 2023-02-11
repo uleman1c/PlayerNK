@@ -11,28 +11,14 @@
         android:id="@+id/rvList"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/btnStart"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:layout_conversion_absoluteHeight="0dp"
         tools:layout_conversion_absoluteWidth="0dp" />
-
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="Начать воспроизведение"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_conversion_absoluteHeight="48dp"
-        tools:layout_conversion_absoluteWidth="264dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
