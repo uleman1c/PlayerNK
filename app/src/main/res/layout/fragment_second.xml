@@ -6,13 +6,82 @@
     android:layout_height="match_parent"
     tools:context=".StyleFragment">
 
+    <CheckBox
+        android:id="@+id/cbRandom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="Случайный порядок"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cbNewOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+
+        android:text="Только новые"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cbAquaring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ознакомление, от начала"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cbRandom" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvList"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
         app:layoutManager="LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/btnStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbAquaring"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Начать воспротизведение"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/etStart"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/cbAquaring"
+        app:layout_constraintTop_toBottomOf="@+id/cbRandom" />
+
+    <TextView
+        android:id="@+id/tvRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="длит."
+        app:layout_constraintStart_toEndOf="@+id/etStart"
+        app:layout_constraintTop_toBottomOf="@+id/cbNewOnly" />
+
+    <EditText
+        android:id="@+id/etRange"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/tvRange"
+        app:layout_constraintTop_toBottomOf="@+id/cbRandom" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

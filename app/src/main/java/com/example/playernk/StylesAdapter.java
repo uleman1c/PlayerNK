@@ -1,6 +1,7 @@
 package com.example.playernk;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,16 @@ public class StylesAdapter extends RecyclerView.Adapter<StylesAdapter.ItemViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Style song = items.get(position);
+        Style item = items.get(position);
 
-        holder.tvDescription.setText(song.name);
+        holder.tvDescription.setText(item.name);
+
+        if (item.selected){
+            holder.tvDescription.setBackgroundColor(Color.parseColor("#FF018786"));
+        } else {
+            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+
 
 
 

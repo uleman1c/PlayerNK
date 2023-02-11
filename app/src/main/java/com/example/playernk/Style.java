@@ -10,12 +10,17 @@ public class Style {
 
     public String id, name, ext, style, description;
 
+    public Boolean selected;
+
     public Style(String id, String name, String ext, String style, String description) {
         this.id = id;
         this.name = name;
         this.ext = ext;
         this.style = style;
         this.description = description;
+
+        this.selected = false;
+
     }
 
 

@@ -483,6 +483,54 @@ public class DB {
 
         }
 
+        String random = db.getConstant("random");
+        if (random == null) {
+
+            random = "false";
+            db.updateConstant("random", random);
+
+        }
+
+        String newOnly = db.getConstant("newOnly");
+        if (newOnly == null) {
+
+            newOnly = "false";
+            db.updateConstant("newOnly", newOnly);
+
+        }
+
+        String aquare = db.getConstant("aquare");
+        if (aquare == null) {
+
+            aquare = "false";
+            db.updateConstant("aquare", aquare);
+
+        }
+
+        String aquareStart = db.getConstant("aquareStart");
+        if (aquareStart == null) {
+
+            aquareStart = "30";
+            db.updateConstant("aquareStart", aquareStart);
+
+        }
+
+        String aquareRange = db.getConstant("aquareRange");
+        if (aquareRange == null) {
+
+            aquareRange = "60";
+            db.updateConstant("aquareRange", aquareRange);
+
+        }
+
+        String selectedStyles = db.getConstant("selectedStyles");
+        if (selectedStyles == null) {
+
+            selectedStyles = "";
+            db.updateConstant("selectedStyles", selectedStyles);
+
+        }
+
         db.close();
 
     }

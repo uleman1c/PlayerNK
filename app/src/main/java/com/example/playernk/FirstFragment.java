@@ -44,7 +44,7 @@ public class FirstFragment extends Fragment {
     AudioManager am;
     CheckBox chbLoop;
 
-    Boolean aquare, startPlay;
+    Boolean aquare, random, startPlay, newOnly;
 
     Date lastStart;
 
@@ -61,13 +61,38 @@ public class FirstFragment extends Fragment {
 
     RecyclerView rvList;
 
+    String selectedStyles;
+
+    Integer aquareStart, aquareRange;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         url = Conn.addr;
 
-        aquare = false;
+        DB db = new DB(getContext());
+
+        db.open();
+
+        random = db.getConstant("random").equals("true");
+
+        newOnly = db.getConstant("newOnly").equals("true");
+
+        aquare = db.getConstant("aquare").equals("true");
+
+        aquareStart = Integer.valueOf(db.getConstant("aquareStart"));
+
+        aquareRange = Integer.valueOf(db.getConstant("aquareRange"));
+
+        selectedStyles = db.getConstant("selectedStyles");
+
+        db.close();
+
+
+
+
+
         startPlay = false;
 
         songs = new ArrayList<>();
@@ -110,10 +135,15 @@ public class FirstFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
 
-                String style = bundle.getString("style");
+                aquare = bundle.getBoolean("aquaring");
+                random = bundle.getBoolean("random");
+                newOnly = bundle.getBoolean("newOnly");
 
-                getSongSettings.styles.clear();
-                getSongSettings.styles.add(style);
+                selectedStyles = bundle.getString("selectedStyles");
+
+                aquareStart = bundle.getInt("aquareStart");
+                aquareRange = bundle.getInt("aquareRange");
+
 
                 UpdateSongs();
 
@@ -291,15 +321,13 @@ public class FirstFragment extends Fragment {
 
             Date curDate = new Date();
             if (aquare && lastStart != null
-                    && curDate.getTime()-lastStart.getTime() > 60000) {
-
-
+                    && curDate.getTime()-lastStart.getTime() > aquareRange * 1000) {
 
                 NextSong();
 
             }
 
-            handler.postDelayed(nextSong, 3000);
+            handler.postDelayed(nextSong, aquareStart * 1000);
 
         }
     };
@@ -437,13 +465,22 @@ public class FirstFragment extends Fragment {
 
     public void UpdateSongs(){
 
-        songs.clear();
+        getSongSettings.styles.clear();
 
-        Boolean newOnly = true;
+        if (!selectedStyles.isEmpty()){
+
+            for (String curStyle: selectedStyles.split(",")
+            ) {
+
+                getSongSettings.styles.add(curStyle);
+            }
+        }
+
+        songs.clear();
 
         JSONObject params = new JSONObject();
         DefaultJson.put(params,"limit", 200);
-        DefaultJson.put(params,"random", true);
+        DefaultJson.put(params,"random", random);
         DefaultJson.put(params,"newOnly", newOnly);
 
         setFilter(params, newOnly);
@@ -465,6 +502,10 @@ public class FirstFragment extends Fragment {
 
 
                 songsAdapter.notifyDataSetChanged();
+
+                curSongIndex = 0;
+
+                PlaySong();
 
             }
 
@@ -512,10 +553,16 @@ public class FirstFragment extends Fragment {
 
         }
 
+        String selectedStyles = "";
+
+        for (String style : getSongSettings.styles
+             ) {
+            selectedStyles = selectedStyles + (selectedStyles.isEmpty() ? "" : " or ") + " style = '" + style + "'";
+        }
 
         if (getSongSettings.styles.size() > 0) {
 
-            jsonArray.put(" style = '" + getSongSettings.styles.get(0) + "'");
+            jsonArray.put("(" + selectedStyles + ")");
 
         }
 
