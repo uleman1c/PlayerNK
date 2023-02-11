@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHolder> {
+public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ItemViewHolder> {
 
     private LayoutInflater inflater;
-    private ArrayList<Song> items;
+    private ArrayList<Favorite> items;
 
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
@@ -24,18 +24,15 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
 
         private TextView tvNumberDate;
         private TextView tvDescription;
-        private TextView tvStyle;
-
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
-            tvStyle = (TextView) itemView.findViewById(R.id.tvStyle);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Song item = items.get(getLayoutPosition());
+                    Favorite item = items.get(getLayoutPosition());
                     onItemClickListener.onItemClick(item);
                 }
             });
@@ -43,7 +40,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Song item = items.get(getLayoutPosition());
+                    Favorite item = items.get(getLayoutPosition());
                     onItemLongClickListener.onLongItemClick(item);
                     return true;
                 }
@@ -52,17 +49,17 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
 
     }
 
-    public SongsAdapter(Context context, ArrayList<Song> songs) {
+    public FavoritesAdapter(Context context, ArrayList<Favorite> songs) {
         this.items = songs;
         this.inflater = LayoutInflater.from(context);
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Song item);
+        void onItemClick(Favorite item);
     }
 
     public interface OnItemLongClickListener {
-        void onLongItemClick(Song item);
+        void onLongItemClick(Favorite item);
     }
 
     public void setOnItemClickListener(OnItemClickListener onDocumentItemClickListener) {
@@ -76,30 +73,22 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = inflater.inflate(R.layout.song_list_item, parent, false);
+        View view = inflater.inflate(R.layout.style_list_item, parent, false);
         return new ItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Song song = items.get(position);
+        Favorite item = items.get(position);
 
-        holder.tvDescription.setText(song.name + "." + song.ext);
-        holder.tvStyle.setText(song.style);
+        holder.tvDescription.setText(item.name);
 
-        if (song.nowPlaying){
-            holder.tvStyle.setBackgroundColor(Color.parseColor("#3CB371"));
-        } else {
-            holder.tvStyle.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//        if (item.selected){
+//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FF018786"));
+//        } else {
+//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//        }
 
-        }
-
-        if (song.favorite){
-            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFEB3B"));
-        } else {
-            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-        }
 
 
 

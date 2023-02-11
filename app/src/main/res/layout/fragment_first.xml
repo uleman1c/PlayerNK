@@ -54,6 +54,15 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/btnFavorites"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="FAV"
+            android:textSize="12sp"></Button>
+
+        <Button
             android:id="@+id/btnBackward"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

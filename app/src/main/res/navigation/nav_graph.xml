@@ -15,4 +15,9 @@
         android:name="com.example.playernk.StyleFragment"
         android:label="Style"
         tools:layout="@layout/fragment_second"/>
+    <fragment
+        android:id="@+id/FavoritesFragment"
+        android:name="com.example.playernk.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" />
 </navigation>

@@ -6,38 +6,35 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Song {
+public class Favorite {
 
-    public String id, name, ext, style, description;
-    public Boolean nowPlaying, favorite;
+    public String id, file_id, name, ext, style, description;
+    public Boolean nowPlaying;
 
-    public Song(String id, String name, String ext, String style, String description, Boolean favorite) {
+
+    public Favorite(String id, String file_id, String name, String ext, String style, String description) {
         this.id = id;
+        this.file_id = file_id;
         this.name = name;
         this.ext = ext;
         this.style = style;
         this.description = description;
-        this.favorite = favorite;
-
-        this.nowPlaying = false;
     }
 
+    public static Favorite getFavoriteFromJsonObject(JSONObject jsonObject){
 
-
-    public static Song getSongFromJsonObject(JSONObject jsonObject){
-
-        return new Song(
+        return new Favorite(
                 DefaultJson.getString(jsonObject, "id", ""),
+                DefaultJson.getString(jsonObject, "file_id", ""),
                 DefaultJson.getString(jsonObject, "name", ""),
                 DefaultJson.getString(jsonObject, "ext", ""),
                 DefaultJson.getString(jsonObject, "style", ""),
-                DefaultJson.getString(jsonObject, "description", ""),
-                DefaultJson.getBoolean(jsonObject, "favorite", false)
-                );
+                DefaultJson.getString(jsonObject, "description", "")
+        );
 
     }
 
-    public static ArrayList<Song> getFromJsonArray(ArrayList<Song> songs, JSONArray jsonArray){
+    public static ArrayList<Favorite> getFromJsonArray(ArrayList<Favorite> songs, JSONArray jsonArray){
 
         for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -48,11 +45,16 @@ public class Song {
                 throw new RuntimeException(e);
             }
 
-            songs.add(getSongFromJsonObject(jsonObject));
+            songs.add(getFavoriteFromJsonObject(jsonObject));
 
         }
 
 
         return songs;
     }
+
+
+
+
+
 }

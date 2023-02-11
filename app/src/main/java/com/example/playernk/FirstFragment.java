@@ -186,6 +186,44 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        songsAdapter.setOnItemLongClickListener(new SongsAdapter.OnItemLongClickListener() {
+            @Override
+            public void onLongItemClick(Song item) {
+
+                item.favorite = !item.favorite;
+
+                songsAdapter.notifyDataSetChanged();
+
+                JSONObject params = new JSONObject();
+                DefaultJson.put(params,"file_id", item.id);
+                DefaultJson.put(params,"mode", item.favorite ? "add" : "del");
+
+                VolleyRequestQueue.executeRequestPost(getContext(), url + "favorites", params, new JsonCallback() {
+                    @Override
+                    public void CallbackObject(JSONObject response) {
+
+//                        try {
+//                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
+//                        } catch (JSONException e) {
+//                            throw new RuntimeException(e);
+//                        }
+
+                        songsAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void CallbackArray(JSONArray jsonArray) {
+
+                    }
+                });
+
+
+
+
+            }
+        });
+
         binding.btnStyle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -280,7 +318,7 @@ public class FirstFragment extends Fragment {
         binding.btnResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mediaPlayer.isPlaying())
+                if (mediaPlayer != null && !mediaPlayer.isPlaying())
                     mediaPlayer.start();
 
             }
@@ -293,6 +331,16 @@ public class FirstFragment extends Fragment {
                 aquare = false;
 
                 mediaPlayer.stop();
+            }
+        });
+
+        binding.btnFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.FavoritesFragment);
+
             }
         });
 
@@ -364,6 +412,9 @@ public class FirstFragment extends Fragment {
     }
 
     private void PlaySong(int seekTo) {
+
+        if (songs.size() == 0)
+            return;
 
         Song curSong = songs.get(curSongIndex);
 

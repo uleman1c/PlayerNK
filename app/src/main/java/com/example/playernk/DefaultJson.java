@@ -22,6 +22,20 @@ public class DefaultJson {
 
     }
 
+    public static Boolean getBoolean(JSONObject jsonObject, String key, Boolean def){
+
+        Boolean result = def;
+
+        try {
+            result = !jsonObject.getString(key).equals("0");
+        } catch (JSONException e) {
+            //throw new RuntimeException(e);
+        }
+
+        return result;
+
+    }
+
     public static void put(JSONObject jsonObject, String key, String value){
 
         try {
