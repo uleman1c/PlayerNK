@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Song {
 
     public String id, name, ext, style, description;
+    public Boolean nowPlaying;
 
     public Song(String id, String name, String ext, String style, String description) {
         this.id = id;
@@ -16,6 +17,7 @@ public class Song {
         this.ext = ext;
         this.style = style;
         this.description = description;
+        this.nowPlaying = false;
     }
 
 
