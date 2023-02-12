@@ -569,10 +569,10 @@ public class FirstFragment extends Fragment {
         JSONObject params = new JSONObject();
         DefaultJson.put(params,"limit", 200);
         DefaultJson.put(params,"random", random);
-        DefaultJson.put(params,"newOnly", newOnly);
+        DefaultJson.put(params,"newOnly", favorites ? false : newOnly);
         DefaultJson.put(params,"favorites", favorites);
 
-        setFilter(params, newOnly);
+        setFilter(params, favorites ? false : newOnly);
 
         setOrder(params);
 
