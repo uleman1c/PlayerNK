@@ -162,15 +162,7 @@ public class FirstFragment extends Fragment {
 
                 userName = bundle.getString("userName");
 
-                binding.tvUser.setText(userName);
-
-                if (userName.isEmpty()){
-                    binding.btnLogin.setVisibility(View.VISIBLE);
-                    binding.btnLogout.setVisibility(View.GONE);
-                } else {
-                    binding.btnLogin.setVisibility(View.GONE);
-                    binding.btnLogout.setVisibility(View.VISIBLE);
-                }
+                setTextAndButtons();
 
             }
         });
@@ -203,15 +195,7 @@ public class FirstFragment extends Fragment {
         binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
         binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
 
-        binding.tvUser.setText(userName);
-
-        if (userName.isEmpty()){
-            binding.btnLogin.setVisibility(View.VISIBLE);
-            binding.btnLogout.setVisibility(View.GONE);
-        } else {
-            binding.btnLogin.setVisibility(View.GONE);
-            binding.btnLogout.setVisibility(View.VISIBLE);
-        }
+        setTextAndButtons();
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
@@ -270,6 +254,24 @@ public class FirstFragment extends Fragment {
                         .navigate(R.id.loginFragment);
 
 
+
+            }
+        });
+
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                userName = "";
+
+                DB db = new DB(getContext());
+                db.open();
+
+                db.updateConstant("userName", userName);
+
+                db.close();
+
+                setTextAndButtons();
 
             }
         });
@@ -447,6 +449,18 @@ public class FirstFragment extends Fragment {
             }
         });
 
+    }
+
+    private void setTextAndButtons() {
+        binding.tvUser.setText(userName);
+
+        if (userName.isEmpty()){
+            binding.btnLogin.setVisibility(View.VISIBLE);
+            binding.btnLogout.setVisibility(View.GONE);
+        } else {
+            binding.btnLogin.setVisibility(View.GONE);
+            binding.btnLogout.setVisibility(View.VISIBLE);
+        }
     }
 
     final Runnable nextSong = new Runnable() {
