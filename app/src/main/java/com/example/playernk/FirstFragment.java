@@ -2,6 +2,7 @@ package com.example.playernk;
 
 import static android.content.Context.AUDIO_SERVICE;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -262,16 +263,23 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                userName = "";
+                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), "Warning", "Are you sure you want to log out?", new Bundle(), new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
 
-                DB db = new DB(getContext());
-                db.open();
+                        userName = "";
 
-                db.updateConstant("userName", userName);
+                        DB db = new DB(getContext());
+                        db.open();
 
-                db.close();
+                        db.updateConstant("userName", userName);
 
-                setTextAndButtons();
+                        db.close();
+
+                        setTextAndButtons();
+                    }
+                });
+
 
             }
         });
