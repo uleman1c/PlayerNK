@@ -152,6 +152,28 @@ public class FirstFragment extends Fragment {
 
             }
         });
+
+        getParentFragmentManager().setFragmentResultListener("loginUser", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                aquare = bundle.getBoolean("aquaring");
+                random = bundle.getBoolean("random");
+                newOnly = bundle.getBoolean("newOnly");
+
+                selectedStyles = bundle.getString("selectedStyles");
+
+                aquareStart = bundle.getInt("aquareStart");
+                aquareRange = bundle.getInt("aquareRange");
+
+
+                UpdateSongs();
+
+            }
+        });
+
+
+
     }
 
     @Override
@@ -177,6 +199,8 @@ public class FirstFragment extends Fragment {
 
         binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
         binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+
+
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
@@ -226,6 +250,19 @@ public class FirstFragment extends Fragment {
 
             }
         });
+
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.loginFragment);
+
+
+
+            }
+        });
+
 
         binding.btnStyle.setOnClickListener(new View.OnClickListener() {
             @Override
