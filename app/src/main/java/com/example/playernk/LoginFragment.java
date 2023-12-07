@@ -7,6 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +65,59 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View root = inflater.inflate(R.layout.fragment_login, container, false);
+
+        root.findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText etName = root.findViewById(R.id.etName);
+                EditText etPassword = root.findViewById(R.id.etPassword);
+
+                TextView tvError = root.findViewById(R.id.tvError);
+
+                String userName = etName.getText().toString().replaceAll(" ", "");
+                String userPassword = etPassword.getText().toString().replaceAll(" ", "");
+
+                if (userName.isEmpty()){
+
+                    tvError.setText("name must be specified");
+
+                } else if (userPassword.isEmpty()) {
+
+                    tvError.setText("password must be specified");
+
+                } else {
+
+                    tvError.setText("logining");
+
+                    VolleyRequestQueue.executeRequest(getContext(), Conn.addr + "users?name=" + userName + "&password=" + userPassword, new JsonCallback() {
+                        @Override
+                        public void CallbackObject(JSONObject jsonObject) {
+
+                            JSONArray users = new JSONArray();
+
+                            try {
+                                users = jsonObject.getJSONArray("rows");
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            if (users.length() == 0){
+
+                                tvError.setText("user not found");
+                            }
+                        }
+
+                        @Override
+                        public void CallbackArray(JSONArray jsonArray) {
+
+                        }
+                    });
+                }
+            }
+        });
+
+        return root;
     }
 }

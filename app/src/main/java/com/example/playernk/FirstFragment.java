@@ -51,7 +51,7 @@ public class FirstFragment extends Fragment {
 
     int curSongIndex;
 
-    String url;
+    String url, userName;
 
     TimerTask timerTask;
     Timer timer;
@@ -90,7 +90,10 @@ public class FirstFragment extends Fragment {
 
         selectedStyles = db.getConstant("selectedStyles");
 
+        userName = db.getConstant("userName");
+
         db.close();
+
 
 
 
@@ -200,7 +203,15 @@ public class FirstFragment extends Fragment {
         binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
         binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
 
+        binding.tvUser.setText(userName);
 
+        if (userName.isEmpty()){
+            binding.btnLogin.setVisibility(View.VISIBLE);
+            binding.btnLogout.setVisibility(View.GONE);
+        } else {
+            binding.btnLogin.setVisibility(View.GONE);
+            binding.btnLogout.setVisibility(View.VISIBLE);
+        }
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override

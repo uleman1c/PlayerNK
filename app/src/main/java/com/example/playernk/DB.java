@@ -539,6 +539,14 @@ public class DB {
 
         }
 
+        String userName = db.getConstant("userName");
+        if (userName == null) {
+
+            userName = "";
+            db.updateConstant("userName", userName);
+
+        }
+
         db.close();
 
     }
