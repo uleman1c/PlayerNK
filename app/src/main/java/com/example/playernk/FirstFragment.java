@@ -156,21 +156,21 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        getParentFragmentManager().setFragmentResultListener("loginUser", this, new FragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener("userLogin", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
 
-                aquare = bundle.getBoolean("aquaring");
-                random = bundle.getBoolean("random");
-                newOnly = bundle.getBoolean("newOnly");
+                userName = bundle.getString("userName");
 
-                selectedStyles = bundle.getString("selectedStyles");
+                binding.tvUser.setText(userName);
 
-                aquareStart = bundle.getInt("aquareStart");
-                aquareRange = bundle.getInt("aquareRange");
-
-
-                UpdateSongs();
+                if (userName.isEmpty()){
+                    binding.btnLogin.setVisibility(View.VISIBLE);
+                    binding.btnLogout.setVisibility(View.GONE);
+                } else {
+                    binding.btnLogin.setVisibility(View.GONE);
+                    binding.btnLogout.setVisibility(View.VISIBLE);
+                }
 
             }
         });

@@ -2,7 +2,10 @@ package com.example.playernk;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +62,36 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        getParentFragmentManager().setFragmentResultListener("userRegister", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                String userName = bundle.getString("userName");
+
+                setUserLogined(userName);
+
+
+            }
+        });
+
+
+
+    }
+
+    private void setUserLogined(String userName) {
+        DB db = new DB(getContext());
+        db.open();
+
+        db.updateConstant("userName", userName);
+
+        db.close();
+
+        Bundle responce = new Bundle();
+        responce.putString("userName", userName);
+        getParentFragmentManager().setFragmentResult("userLogin", responce);
+
+        NavHostFragment.findNavController(LoginFragment.this).popBackStack();
     }
 
     @Override
@@ -66,6 +99,29 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_login, container, false);
+
+        root.findViewById(R.id.btnRegister).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText etName = root.findViewById(R.id.etName);
+                EditText etPassword = root.findViewById(R.id.etPassword);
+
+                String userName = etName.getText().toString().replaceAll(" ", "");
+                String userPassword = etPassword.getText().toString().replaceAll(" ", "");
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("name", userName);
+                bundle.putString("password", userPassword);
+
+                NavHostFragment.findNavController(LoginFragment.this)
+                        .navigate(R.id.registerFragment, bundle);
+
+            }
+        });
+
+
 
         root.findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +162,11 @@ public class LoginFragment extends Fragment {
                             if (users.length() == 0){
 
                                 tvError.setText("user not found");
+
+                                root.findViewById(R.id.btnRegister).setVisibility(View.VISIBLE);
+
+                            } else {
+                                setUserLogined(userName);
                             }
                         }
 

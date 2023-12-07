@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginFragment">
+    tools:context=".RegisterFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,6 +54,28 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvRepeatPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Repeat" />
+
+            <EditText
+                android:id="@+id/etPasswordRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPassword" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tvError"
             android:layout_width="match_parent"
@@ -68,23 +90,15 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4sp"
-                android:layout_weight="1"
-                android:text="Login" />
-
-            <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4sp"
                 android:layout_weight="1"
-                android:text="Register"
-                android:visibility="gone" />
+                android:text="Register" />
         </LinearLayout>
 
     </LinearLayout>
+
 
 </FrameLayout>
