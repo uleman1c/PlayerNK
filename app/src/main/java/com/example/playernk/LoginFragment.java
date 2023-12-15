@@ -68,8 +68,9 @@ public class LoginFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
 
                 String userName = bundle.getString("userName");
+                String userId = bundle.getString("userId");
 
-                setUserLogined(userName, userName);
+                setUserLogined(userName, userId);
 
 
             }

@@ -133,11 +133,19 @@ public class RegisterFragment extends Fragment {
                                             throw new RuntimeException(e);
                                         }
 
-                                        if (result){
+                                        if (result) {
+
+                                            String userId;
+                                            try {
+                                                userId = jsonObject.getString("id");
+                                            } catch (JSONException e) {
+                                                throw new RuntimeException(e);
+                                            }
 
 
                                             Bundle responce = new Bundle();
                                             responce.putString("userName", userName);
+                                            responce.putString("userId", userId);
                                             getParentFragmentManager().setFragmentResult("userRegister", responce);
 
                                             NavHostFragment.findNavController(RegisterFragment.this).popBackStack();
