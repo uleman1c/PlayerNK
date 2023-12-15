@@ -166,6 +166,9 @@ public class LoginFragment extends Fragment {
                                 root.findViewById(R.id.btnRegister).setVisibility(View.VISIBLE);
 
                             } else {
+
+                                //, users.get(0).
+
                                 setUserLogined(userName);
                             }
                         }

@@ -208,6 +208,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/loop"></CheckBox>
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClick"
+            android:text="@string/history"
+            android:textSize="12sp"></Button>
+
     </LinearLayout>
 
 

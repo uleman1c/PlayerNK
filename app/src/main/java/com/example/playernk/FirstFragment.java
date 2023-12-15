@@ -8,6 +8,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -428,6 +429,17 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.hystoryFragment);
+
+            }
+        });
+
+
         binding.btnBackward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -530,12 +542,14 @@ public class FirstFragment extends Fragment {
         releaseMP();
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build()
+            );
+        }
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -582,7 +596,9 @@ public class FirstFragment extends Fragment {
 
                         try {
                             mediaPlayer.reset();
-                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
+                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id
+                                    + "&appid=" + DB.getDbConstant(getContext(), "appId")
+                                    + "&userid=" + DB.getDbConstant(getContext(), "userId")));
                             mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 

@@ -30,4 +30,9 @@
         android:name="com.example.playernk.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/hystoryFragment"
+        android:name="com.example.playernk.HystoryFragment"
+        android:label="Hystory"
+        tools:layout="@layout/fragment_history"/>
 </navigation>
