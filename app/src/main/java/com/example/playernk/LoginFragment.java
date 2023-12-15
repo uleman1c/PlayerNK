@@ -69,7 +69,7 @@ public class LoginFragment extends Fragment {
 
                 String userName = bundle.getString("userName");
 
-                setUserLogined(userName);
+                setUserLogined(userName, userName);
 
 
             }
@@ -79,11 +79,12 @@ public class LoginFragment extends Fragment {
 
     }
 
-    private void setUserLogined(String userName) {
+    private void setUserLogined(String userName, String userId) {
         DB db = new DB(getContext());
         db.open();
 
         db.updateConstant("userName", userName);
+        db.updateConstant("userId", userId);
 
         db.close();
 
@@ -167,9 +168,23 @@ public class LoginFragment extends Fragment {
 
                             } else {
 
+                                JSONObject user = null;
+                                try {
+                                    user = users.getJSONObject(0);
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                String userId;
+                                try {
+                                    userId = user.getString("id");
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
                                 //, users.get(0).
 
-                                setUserLogined(userName);
+                                setUserLogined(userName, userId);
                             }
                         }
 

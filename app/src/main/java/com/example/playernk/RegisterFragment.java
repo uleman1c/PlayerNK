@@ -135,6 +135,7 @@ public class RegisterFragment extends Fragment {
 
                                         if (result){
 
+
                                             Bundle responce = new Bundle();
                                             responce.putString("userName", userName);
                                             getParentFragmentManager().setFragmentResult("userRegister", responce);

@@ -544,6 +544,7 @@ public class DB {
 
             userName = "";
             db.updateConstant("userName", userName);
+            db.updateConstant("userId", userName);
 
         }
 
