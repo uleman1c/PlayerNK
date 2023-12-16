@@ -38,13 +38,17 @@ public class BackgroundSoundService extends Service {
 
     @Override
     public void onDestroy() {
+
+        mediaPlayer.stop();
+        mediaPlayer.release();
+
         super.onDestroy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
+//        mediaPlayer.start();
 
         return super.onStartCommand(intent, flags, startId);
     }

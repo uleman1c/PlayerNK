@@ -1,5 +1,6 @@
 package com.example.playernk;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        Intent intent = new Intent(getBaseContext(), BackgroundSoundService.class);
+//        startService(intent);
 
         DB.onStart(getBaseContext());
 

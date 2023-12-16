@@ -3,6 +3,7 @@ package com.example.playernk;
 import static android.content.Context.AUDIO_SERVICE;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -212,6 +213,9 @@ public class FirstFragment extends Fragment {
     ) {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
+
+
+
         return binding.getRoot();
 
     }
