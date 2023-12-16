@@ -61,9 +61,9 @@ public class HystoryFragment extends Fragment {
         }
     }
 
-    ArrayList<Favorite> favorites;
+    ArrayList<History> items;
 
-    FavoritesAdapter favoritesAdapter;
+    HistoryAdapter adapter;
 
     RecyclerView rvList;
 
@@ -73,11 +73,11 @@ public class HystoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_favorites, container, false);
 
-        favorites = new ArrayList<>();
-        favoritesAdapter = new FavoritesAdapter(getContext(), favorites);
+        items = new ArrayList<>();
+        adapter = new HistoryAdapter(getContext(), items);
 
         rvList = inflate.findViewById(R.id.rvList);
-        rvList.setAdapter(favoritesAdapter);
+        rvList.setAdapter(adapter);
 
         Update();
 
@@ -86,20 +86,22 @@ public class HystoryFragment extends Fragment {
 
     public void Update(){
 
-        favorites.clear();
+        items.clear();
 
-        VolleyRequestQueue.executeRequest(getContext(), Conn.addr + "favorites?appid=" + DB.getDbConstant(getContext(), "appId"), new JsonCallback() {
+        VolleyRequestQueue.executeRequest(getContext(), Conn.addr + "history?appid="
+                + DB.getDbConstant(getContext(), "appId")
+                + "&userid=" + DB.getDbConstant(getContext(), "userId"), new JsonCallback() {
             @Override
             public void CallbackObject(JSONObject response) {
 
                 try {
-                    Favorite.getFromJsonArray(favorites, response.getJSONArray("rows"));
+                    History.getFromJsonArray(items, response.getJSONArray("rows"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
 
 
-                favoritesAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 
             }
 
