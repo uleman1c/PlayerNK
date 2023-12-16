@@ -31,7 +31,9 @@
         <service
             android:name=".BackgroundSoundService"
             android:enabled="true"
-            android:exported="true" />
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true">
+        </service>
 
     </application>
 
