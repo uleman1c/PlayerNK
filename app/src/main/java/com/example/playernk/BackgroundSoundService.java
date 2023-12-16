@@ -1,5 +1,8 @@
 package com.example.playernk;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +16,7 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +28,7 @@ public class BackgroundSoundService extends Service {
     MediaPlayer mediaPlayer;
 
     private BroadcastReceiver broadcastReceiver;
+    private NotificationManager notificationManager;
 
     @Nullable
     @Override
@@ -34,6 +39,8 @@ public class BackgroundSoundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -136,6 +143,51 @@ public class BackgroundSoundService extends Service {
 
     }
 
+    void sendNotif() {
+
+//        Intent intent = new Intent(this, AlertDetails.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        Notification notification = new NotificationCompat.Builder(getBaseContext(), getString(R.string.playernk_channel))
+                // Show controls on lock screen even when user hides sensitive content.
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+//                .setSmallIcon(R.drawable.ic_stat_player)
+//                // Add media control buttons that invoke intents in your media service
+//                .addAction(R.drawable.ic_prev, "Previous", prevPendingIntent) // #0
+//                .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)  // #1
+//                .addAction(R.drawable.ic_next, "Next", nextPendingIntent)     // #2
+//                // Apply the media style template.
+//                .setStyle(new android.support.v4.media.app.Notification.MediaStyle()
+//                        .setShowActionsInCompactView(1 /* #1: pause button */)
+//                        .setMediaSession(mediaSession.getSessionToken()))
+                .setContentTitle("Wonderful music")
+                .setContentText("My Awesome Band")
+//                .setLargeIcon(albumArtBitmap)
+                .build();
+
+
+
+
+        // 1-я часть
+//        Notification notif = new Notification.Builder();
+//
+//        // 3-я часть
+//        Intent intent = new Intent(this, MainActivity.class);
+//        intent.putExtra(MainActivity.FILE_NAME, "somefile");
+//        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+//
+//        // 2-я часть
+//        notif.setLatestEventInfo(this, "Notification's title", "Notification's text", pIntent);
+//
+//        // ставим флаг, чтобы уведомление пропало после нажатия
+//        notif.flags |= Notification.FLAG_AUTO_CANCEL;
+//
+//        // отправляем
+//        notificationManager.notify(1, notif);
+    }
+
+
     @Override
     public void onDestroy() {
 
@@ -149,6 +201,8 @@ public class BackgroundSoundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 //        mediaPlayer.start();
+
+        sendNotif();
 
         return super.onStartCommand(intent, flags, startId);
     }
