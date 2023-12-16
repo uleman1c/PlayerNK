@@ -97,6 +97,38 @@ public class FirstFragment extends Fragment {
         db.close();
 
 
+        getParentFragmentManager().setFragmentResultListener("selectSongFromHistory", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+
+
+                String id = result.getString("id");
+                String name = result.getString("name");
+                String ext = result.getString("ext");
+                String style = result.getString("style");
+                String description = result.getString("description");
+
+                int foundSongIndex = -1;
+
+                for (Song song: songs) {
+                    if (song.id.equals(id)){
+                        foundSongIndex = songs.indexOf(song);
+                    }
+                }
+
+                if (foundSongIndex == -1){
+                    songs.add(new Song(id, name, ext, style, description, false ));
+
+                    foundSongIndex = songs.size() - 1;
+                }
+
+                curSongIndex = foundSongIndex;
+                PlaySong();
+
+            }
+        });
+
 
 
 

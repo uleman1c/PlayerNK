@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -75,6 +76,30 @@ public class HystoryFragment extends Fragment {
 
         items = new ArrayList<>();
         adapter = new HistoryAdapter(getContext(), items);
+
+        adapter.setOnItemClickListener(new HistoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(History item) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("id", item.file_id);
+                bundle.putString("name", item.name);
+                bundle.putString("ext", item.ext);
+                bundle.putString("style", item.style);
+                bundle.putString("description", item.description);
+                getParentFragmentManager().setFragmentResult("selectSongFromHistory", bundle);
+
+                NavHostFragment.findNavController(HystoryFragment.this).popBackStack();
+
+            }
+        });
+
+        adapter.setOnItemLongClickListener(new HistoryAdapter.OnItemLongClickListener() {
+            @Override
+            public void onLongItemClick(History item) {
+
+            }
+        });
 
         rvList = inflate.findViewById(R.id.rvList);
         rvList.setAdapter(adapter);
