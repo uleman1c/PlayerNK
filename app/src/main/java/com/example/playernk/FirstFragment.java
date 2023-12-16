@@ -575,61 +575,63 @@ public class FirstFragment extends Fragment {
 
         //binding.textviewNameSong.setText(curSong.name);
 
-//        Intent intent = new Intent();
-//        intent.putExtra("songId", curSong.id);
-//        intent.setAction("android.intent.action.playernk.MP");
-//        getContext().sendBroadcast(intent);
+        if (true) {
+            Intent intent = new Intent();
+            intent.putExtra("songId", curSong.id);
+            intent.setAction("android.intent.action.playernk.MP");
+            getContext().sendBroadcast(intent);
+        } else {
 
-        releaseMP();
+            releaseMP();
 
-        mediaPlayer = new MediaPlayer();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mediaPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .build()
-            );
-        }
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-
-                curSongIndex = curSongIndex + 1;
-
-                if (curSongIndex >= songs.size()){
-                    curSongIndex = 0;
-                }
-
-                PlaySong();
-
+            mediaPlayer = new MediaPlayer();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mediaPlayer.setAudioAttributes(
+                        new AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .setUsage(AudioAttributes.USAGE_MEDIA)
+                                .build()
+                );
             }
-        });
 
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
 
-                mediaPlayer.start();
+                    curSongIndex = curSongIndex + 1;
 
-                if (aquare){
+                    if (curSongIndex >= songs.size()) {
+                        curSongIndex = 0;
+                    }
 
-                    mediaPlayer.seekTo(Math.toIntExact(30000));
-
-                    lastStart = new Date();
+                    PlaySong();
 
                 }
-            }
-        });
+            });
+
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+
+                    mediaPlayer.start();
+
+                    if (aquare) {
+
+                        mediaPlayer.seekTo(Math.toIntExact(30000));
+
+                        lastStart = new Date();
+
+                    }
+                }
+            });
 
 
-        VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id
-                        + "&appid=" + DB.getDbConstant(getContext(), "appId")
-                        + "&userid=" + DB.getDbConstant(getContext(), "userId"),
-                new JsonCallback() {
-                    @Override
-                    public void CallbackObject(JSONObject response) {
+            VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id
+                            + "&appid=" + DB.getDbConstant(getContext(), "appId")
+                            + "&userid=" + DB.getDbConstant(getContext(), "userId"),
+                    new JsonCallback() {
+                        @Override
+                        public void CallbackObject(JSONObject response) {
 
 //                        try {
 //                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
@@ -637,26 +639,26 @@ public class FirstFragment extends Fragment {
 //                            throw new RuntimeException(e);
 //                        }
 
-                        try {
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
-                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
+                            try {
+                                mediaPlayer.reset();
+                                mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
+                                mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 
-                        } catch (IOException e) {
-                            //throw new RuntimeException(e);
+                            } catch (IOException e) {
+                                //throw new RuntimeException(e);
+                            }
+
                         }
 
-                    }
+                        @Override
+                        public void CallbackArray(JSONArray jsonArray) {
 
-                    @Override
-                    public void CallbackArray(JSONArray jsonArray) {
-
-                    }
-                });
+                        }
+                    });
 
 
-
+        }
     }
 
     private void releaseMP() {
