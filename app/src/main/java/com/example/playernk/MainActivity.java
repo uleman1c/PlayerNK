@@ -24,7 +24,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    public String CHANNEL_ID = getString(R.string.playernk_channel);
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             CharSequence name = "PlayerNK";
             String description = "PlayerNK";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel = new NotificationChannel(getString(R.string.playernk_channel), name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this.

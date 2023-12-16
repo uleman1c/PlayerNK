@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -16,19 +17,21 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class BackgroundSoundService extends Service {
 
     MediaPlayer mediaPlayer;
 
     private BroadcastReceiver broadcastReceiver;
-    private NotificationManager notificationManager;
 
     @Nullable
     @Override
@@ -40,8 +43,6 @@ public class BackgroundSoundService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -51,11 +52,11 @@ public class BackgroundSoundService extends Service {
                 String url = Conn.addr;
 
                 VolleyRequestQueue.executeRequestPost(context, url + "file?id=" + curSongid
-                        + "&appid=" + DB.getDbConstant(context, "appId")
-                        + "&userid=" + DB.getDbConstant(context, "userId"),
-                new JsonCallback() {
-                    @Override
-                    public void CallbackObject(JSONObject response) {
+                                + "&appid=" + DB.getDbConstant(context, "appId")
+                                + "&userid=" + DB.getDbConstant(context, "userId"),
+                        new JsonCallback() {
+                            @Override
+                            public void CallbackObject(JSONObject response) {
 
 //                        try {
 //                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
@@ -63,29 +64,26 @@ public class BackgroundSoundService extends Service {
 //                            throw new RuntimeException(e);
 //                        }
 
-                        try {
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(context, Uri.parse(url + "file?id=" + curSongid));
+                                try {
+                                    mediaPlayer.reset();
+                                    mediaPlayer.setDataSource(context, Uri.parse(url + "file?id=" + curSongid));
 
-                            mediaPlayer.setLooping(true);
+                                    mediaPlayer.setLooping(true);
 
-                            mediaPlayer.prepare(); // might take long! (for buffering, etc)
-
-
-                        } catch (IOException e) {
-                            //throw new RuntimeException(e);
-                        }
-
-                    }
-
-                    @Override
-                    public void CallbackArray(JSONArray jsonArray) {
-
-                    }
-                });
+                                    mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 
+                                } catch (IOException e) {
+                                    //throw new RuntimeException(e);
+                                }
 
+                            }
+
+                            @Override
+                            public void CallbackArray(JSONArray jsonArray) {
+
+                            }
+                        });
 
 
             }
@@ -93,7 +91,6 @@ public class BackgroundSoundService extends Service {
 
         IntentFilter filter = new IntentFilter("android.intent.action.playernk.MP");
         registerReceiver(broadcastReceiver, filter);
-
 
 
         mediaPlayer = new MediaPlayer();
@@ -140,10 +137,11 @@ public class BackgroundSoundService extends Service {
         });
 
 
-
     }
 
     void sendNotif() {
+
+        String notificationId = "1";
 
 //        Intent intent = new Intent(this, AlertDetails.class);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -152,7 +150,7 @@ public class BackgroundSoundService extends Service {
         Notification notification = new NotificationCompat.Builder(getBaseContext(), getString(R.string.playernk_channel))
                 // Show controls on lock screen even when user hides sensitive content.
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//                .setSmallIcon(R.drawable.ic_stat_player)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
 //                // Add media control buttons that invoke intents in your media service
 //                .addAction(R.drawable.ic_prev, "Previous", prevPendingIntent) // #0
 //                .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)  // #1
@@ -166,7 +164,20 @@ public class BackgroundSoundService extends Service {
 //                .setLargeIcon(albumArtBitmap)
                 .build();
 
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
+// notificationId is a unique int for each notification that you must define.
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(1, notification);
 
 
         // 1-я часть
@@ -202,7 +213,7 @@ public class BackgroundSoundService extends Service {
 
 //        mediaPlayer.start();
 
-        sendNotif();
+        //sendNotif();
 
         return super.onStartCommand(intent, flags, startId);
     }
