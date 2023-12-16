@@ -583,7 +583,9 @@ public class FirstFragment extends Fragment {
         });
 
 
-        VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id,
+        VolleyRequestQueue.executeRequestPost(getContext(), url + "file?id=" + curSong.id
+                        + "&appid=" + DB.getDbConstant(getContext(), "appId")
+                        + "&userid=" + DB.getDbConstant(getContext(), "userId"),
                 new JsonCallback() {
                     @Override
                     public void CallbackObject(JSONObject response) {
@@ -596,9 +598,7 @@ public class FirstFragment extends Fragment {
 
                         try {
                             mediaPlayer.reset();
-                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id
-                                    + "&appid=" + DB.getDbConstant(getContext(), "appId")
-                                    + "&userid=" + DB.getDbConstant(getContext(), "userId")));
+                            mediaPlayer.setDataSource(getContext(), Uri.parse(url + "file?id=" + curSong.id));
                             mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 
