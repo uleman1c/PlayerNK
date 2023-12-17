@@ -108,12 +108,6 @@ public class FirstFragment extends Fragment {
 
         aquare = db.getConstant("aquare").equals("true");
 
-        SetAquareBackground(aquare);
-
-        if (aquare){
-            lastStart = new Date();
-        }
-
         aquareStart = Integer.valueOf(db.getConstant("aquareStart"));
 
         aquareRange = Integer.valueOf(db.getConstant("aquareRange"));
@@ -679,6 +673,8 @@ public class FirstFragment extends Fragment {
         rvList.scrollToPosition(curSongIndex == 0 ? 0 : curSongIndex + 3);
 
         //binding.textviewNameSong.setText(curSong.name);
+
+        lastStart = new Date();
 
         if (true) {
 
