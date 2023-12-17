@@ -25,11 +25,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
 
 public class BackgroundSoundService extends Service {
 
     MediaPlayer mediaPlayer;
+
+    Boolean aquare;
 
     private BroadcastReceiver broadcastReceiver;
 
@@ -43,20 +46,67 @@ public class BackgroundSoundService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        aquare = false;
+
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                String curSongid = intent.getStringExtra("songId");
+                String command = intent.getStringExtra("command");
 
-                String url = Conn.addr;
+                if (command.equals("pause")){
 
-                VolleyRequestQueue.executeRequestPost(context, url + "file?id=" + curSongid
-                                + "&appid=" + DB.getDbConstant(context, "appId")
-                                + "&userid=" + DB.getDbConstant(context, "userId"),
-                        new JsonCallback() {
-                            @Override
-                            public void CallbackObject(JSONObject response) {
+                    if (mediaPlayer.isPlaying())
+                        mediaPlayer.pause();
+
+                }
+                else if (command.equals("start")) {
+
+                    if (mediaPlayer != null && !mediaPlayer.isPlaying())
+                        mediaPlayer.start();
+
+                }
+                else if (command.equals("seekTo")) {
+
+                    int delta = intent.getIntExtra("delta", 0);
+
+                    if (mediaPlayer != null && mediaPlayer.isPlaying())
+                        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + delta);
+
+                }
+                else if (command.equals("stop")) {
+
+                    if (mediaPlayer != null && mediaPlayer.isPlaying())
+                        mediaPlayer.stop();
+
+                }
+                else if (command.equals("setLoop")) {
+
+                    Boolean loop = intent.getBooleanExtra("loop", false);
+
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setLooping(loop);
+                    }
+
+                }
+                else if (command.equals("setAquare")) {
+
+                    aquare = intent.getBooleanExtra("aquare", false);
+
+                }
+                else if (command.equals("playSong")) {
+
+                    String curSongid = intent.getStringExtra("songId");
+                    aquare = intent.getBooleanExtra("aquare", false);
+
+                    String url = Conn.addr;
+
+                    VolleyRequestQueue.executeRequestPost(context, url + "file?id=" + curSongid
+                                    + "&appid=" + DB.getDbConstant(context, "appId")
+                                    + "&userid=" + DB.getDbConstant(context, "userId"),
+                            new JsonCallback() {
+                                @Override
+                                public void CallbackObject(JSONObject response) {
 
 //                        try {
 //                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
@@ -64,27 +114,27 @@ public class BackgroundSoundService extends Service {
 //                            throw new RuntimeException(e);
 //                        }
 
-                                try {
-                                    mediaPlayer.reset();
-                                    mediaPlayer.setDataSource(context, Uri.parse(url + "file?id=" + curSongid));
+                                    try {
+                                        mediaPlayer.reset();
+                                        mediaPlayer.setDataSource(context, Uri.parse(url + "file?id=" + curSongid));
 
-                                    mediaPlayer.setLooping(true);
+                                        mediaPlayer.setLooping(false);
 
-                                    mediaPlayer.prepare(); // might take long! (for buffering, etc)
+                                        mediaPlayer.prepare(); // might take long! (for buffering, etc)
 
 
-                                } catch (IOException e) {
-                                    //throw new RuntimeException(e);
+                                    } catch (IOException e) {
+                                        //throw new RuntimeException(e);
+                                    }
+
                                 }
 
-                            }
+                                @Override
+                                public void CallbackArray(JSONArray jsonArray) {
 
-                            @Override
-                            public void CallbackArray(JSONArray jsonArray) {
-
-                            }
-                        });
-
+                                }
+                            });
+                }
 
             }
         };
@@ -103,20 +153,16 @@ public class BackgroundSoundService extends Service {
             );
         }
 
-//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mediaPlayer) {
-//
-//                curSongIndex = curSongIndex + 1;
-//
-//                if (curSongIndex >= songs.size()){
-//                    curSongIndex = 0;
-//                }
-//
-//                PlaySong();
-//
-//            }
-//        });
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+                Intent intent = new Intent();
+                intent.putExtra("command", "endOfSong");
+                SendTaskToClient(intent);
+
+            }
+        });
 
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -124,20 +170,25 @@ public class BackgroundSoundService extends Service {
 
                 mediaPlayer.start();
 
-/*
                 if (aquare){
 
                     mediaPlayer.seekTo(Math.toIntExact(30000));
 
-                    lastStart = new Date();
-
                 }
-*/
+
             }
         });
 
 
     }
+
+    private void SendTaskToClient(Intent intent){
+
+        intent.setAction("android.intent.action.playernk.fromMP");
+        sendBroadcast(intent);
+
+    }
+
 
     void sendNotif() {
 

@@ -2,14 +2,14 @@ package com.example.playernk;
 
 import static android.content.Context.AUDIO_SERVICE;
 
-import android.app.AlertDialog;
+import static androidx.core.content.ContextCompat.registerReceiver;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -31,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -44,7 +43,7 @@ public class FirstFragment extends Fragment {
     private ArrayList<Song> songs;
     private SongsAdapter songsAdapter;
 
-    MediaPlayer mediaPlayer;
+    //MediaPlayer mediaPlayer;
     AudioManager am;
     CheckBox chbLoop;
 
@@ -69,9 +68,31 @@ public class FirstFragment extends Fragment {
 
     Integer aquareStart, aquareRange;
 
+    private BroadcastReceiver broadcastReceiver;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String command = intent.getStringExtra("command");
+
+                if (command.equals("endOfSong")){
+
+                    NextSong();
+
+                }
+
+            }
+        };
+
+        IntentFilter filter = new IntentFilter("android.intent.action.playernk.fromMP");
+        getContext().registerReceiver(broadcastReceiver, filter);
+
+
 
         url = Conn.addr;
 
@@ -86,6 +107,12 @@ public class FirstFragment extends Fragment {
         favorites = db.getConstant("favorites").equals("true");
 
         aquare = db.getConstant("aquare").equals("true");
+
+        SetAquareBackground(aquare);
+
+        if (aquare){
+            lastStart = new Date();
+        }
 
         aquareStart = Integer.valueOf(db.getConstant("aquareStart"));
 
@@ -338,8 +365,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-                if (mediaPlayer != null)
-                    mediaPlayer.setLooping(isChecked);
+
+                SetLoopBackground(isChecked);
+
             }
         });
 
@@ -359,8 +387,7 @@ public class FirstFragment extends Fragment {
 
                 binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
 
-                //PlaySong();
-
+                SetAquareBackground(aquare);
 
             }
         });
@@ -408,16 +435,16 @@ public class FirstFragment extends Fragment {
         binding.btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mediaPlayer.isPlaying())
-                    mediaPlayer.pause();
+
+                SetPauseBackground();
             }
         });
 
         binding.btnResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mediaPlayer != null && !mediaPlayer.isPlaying())
-                    mediaPlayer.start();
+
+                SetStartBackground();
 
             }
         });
@@ -428,7 +455,7 @@ public class FirstFragment extends Fragment {
 
                 aquare = false;
 
-                mediaPlayer.stop();
+                SetStopBackground();
             }
         });
 
@@ -479,14 +506,18 @@ public class FirstFragment extends Fragment {
         binding.btnBackward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 3000);
+
+                SetSeekToBackground(-3000);
+
             }
         });
 
         binding.btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 3000);
+
+                SetSeekToBackground(3000);
+
             }
         });
 
@@ -495,15 +526,44 @@ public class FirstFragment extends Fragment {
             public void onClick(View view) {
 
                 binding.textViewSongInfo.setText(
-                        "Playing " + mediaPlayer.isPlaying()
-                        + ", Time " + mediaPlayer.getCurrentPosition() + " / "
-                                + mediaPlayer.getDuration()
-                        + ", Looping " + mediaPlayer.isLooping()
+                        "Playing " + "" //mediaPlayer.isPlaying()
+                        + ", Time " + "" //mediaPlayer.getCurrentPosition() + " / "
+                                + "" //mediaPlayer.getDuration()
+                        + ", Looping " + "" //mediaPlayer.isLooping()
                         + ", Volume " + am.getStreamVolume(AudioManager.STREAM_MUSIC)
                 );
 
             }
         });
+
+    }
+
+    private void SetAquareBackground(Boolean aquare) {
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "setAquare");
+        intent.putExtra("aquare", aquare);
+
+        SendTaskToBackGround(intent);
+
+    }
+
+    private void SetSeekToBackground(int delta) {
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "seekTo");
+        intent.putExtra("delta", delta);
+
+        SendTaskToBackGround(intent);
+
+    }
+
+    private void SetStopBackground() {
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "stop");
+
+        SendTaskToBackGround(intent);
 
     }
 
@@ -555,6 +615,51 @@ public class FirstFragment extends Fragment {
 
     }
 
+    private void SendTaskToBackGround(Intent intent){
+
+        intent.setAction("android.intent.action.playernk.MP");
+        getContext().sendBroadcast(intent);
+
+    }
+
+    private void PlaySongBackground(String curSongid, Boolean aquare){
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "playSong");
+        intent.putExtra("songId", curSongid);
+        intent.putExtra("aquare", aquare);
+
+        SendTaskToBackGround(intent);
+
+    }
+
+    private void SetLoopBackground(Boolean loop){
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "setLoop");
+        intent.putExtra("loop", loop);
+
+        SendTaskToBackGround(intent);
+
+    }
+    private void SetStartBackground(){
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "start");
+
+        SendTaskToBackGround(intent);
+
+    }
+
+    private void SetPauseBackground(){
+
+        Intent intent = new Intent();
+        intent.putExtra("command", "pause");
+
+        SendTaskToBackGround(intent);
+
+    }
+
     private void PlaySong(int seekTo) {
 
         if (songs.size() == 0)
@@ -576,14 +681,14 @@ public class FirstFragment extends Fragment {
         //binding.textviewNameSong.setText(curSong.name);
 
         if (true) {
-            Intent intent = new Intent();
-            intent.putExtra("songId", curSong.id);
-            intent.setAction("android.intent.action.playernk.MP");
-            getContext().sendBroadcast(intent);
+
+            PlaySongBackground(curSong.id, aquare);
+
         } else {
 
             releaseMP();
 
+/*
             mediaPlayer = new MediaPlayer();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mediaPlayer.setAudioAttributes(
@@ -656,12 +761,14 @@ public class FirstFragment extends Fragment {
 
                         }
                     });
+*/
 
 
         }
     }
 
     private void releaseMP() {
+/*
         if (mediaPlayer != null){
 
             mediaPlayer.release();
@@ -669,6 +776,7 @@ public class FirstFragment extends Fragment {
             mediaPlayer = null;
 
         }
+*/
     }
 
     @Override
