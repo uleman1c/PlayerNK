@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onDestroy();
 
-        Intent intent = new Intent(getBaseContext(), BackgroundSoundService.class);
-        stopService(intent);
+//        Intent intent = new Intent(getBaseContext(), BackgroundSoundService.class);
+//        stopService(intent);
 
     }
 }
