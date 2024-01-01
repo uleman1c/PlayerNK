@@ -24,13 +24,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
 
         private TextView tvNumberDate;
         private TextView tvDescription;
-        private TextView tvStyle;
+        private TextView tvStyle, tvNumber;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvStyle = (TextView) itemView.findViewById(R.id.tvStyle);
+            tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,22 +85,23 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Song song = items.get(position);
 
+        holder.tvNumber.setText(String.valueOf(position + 1));
         holder.tvDescription.setText(song.name + "." + song.ext);
         holder.tvStyle.setText(song.style);
 
-        if (song.nowPlaying){
-            holder.tvStyle.setBackgroundColor(Color.parseColor("#3CB371"));
-        } else {
-            holder.tvStyle.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//        if (song.nowPlaying){
+//            holder.tvStyle.setBackgroundColor(Color.parseColor("#3CB371"));
+//        } else {
+//            holder.tvStyle.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//
+//        }
 
-        }
-
-        if (song.favorite){
-            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFEB3B"));
-        } else {
-            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-        }
+//        if (song.favorite){
+//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFEB3B"));
+//        } else {
+//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//
+//        }
 
 
 
