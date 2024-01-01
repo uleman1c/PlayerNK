@@ -12,6 +12,10 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -288,28 +292,6 @@ public class FirstFragment extends Fragment {
             }
         });
 
-//        spinnerModes.
-
-//        spinnerModes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//                String s = "";
-//
-//            }
-//        });
-//        spinnerModes.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                String s = "";
-//
-//            }
-//        });
-
-
-
-
         return binding.getRoot();
 
     }
@@ -338,6 +320,20 @@ public class FirstFragment extends Fragment {
                 binding.ibSearch.setVisibility(View.GONE);
 
                 binding.clSearch.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+
+        binding.ibSearch2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                binding.spinnerModes.setVisibility(View.VISIBLE);
+                binding.ibSearch.setVisibility(View.VISIBLE);
+
+                binding.etSearch.setText("");
+                binding.clSearch.setVisibility(View.GONE);
 
 
             }
@@ -401,6 +397,82 @@ public class FirstFragment extends Fragment {
 
 
 
+            }
+        });
+
+        binding.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                JSONObject params = new JSONObject();
+                DefaultJson.put(params,"limit", 200);
+                DefaultJson.put(params,"random", random);
+                DefaultJson.put(params,"newOnly", favorites ? false : newOnly);
+                DefaultJson.put(params,"favorites", favorites);
+
+                String curSearch = binding.etSearch.getText().toString();
+
+                setFilter(params, favorites ? false : newOnly, curSearch);
+
+                VolleyRequestQueue.executeRequestPost(getContext(), url + "files", params, new JsonCallback() {
+                    @Override
+                    public void CallbackObject(JSONObject response) {
+
+                        songs.clear();
+
+                        try {
+                            Song.getFromJsonArray(songs, response.getJSONArray("rows"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+
+
+
+
+                        songsAdapter.notifyDataSetChanged();
+
+                        curSongIndex = 0;
+
+                        PlaySong();
+
+                    }
+
+                    @Override
+                    public void CallbackArray(JSONArray jsonArray) {
+
+                    }
+                });
+
+
+
+            }
+        });
+
+        binding.etSearch.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                Log.d("binding.etSearch.setOnKeyListener", keyEvent.toString());
+
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP
+                    || keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL){
+
+
+
+                }
+
+                return false;
             }
         });
 
@@ -892,7 +964,7 @@ public class FirstFragment extends Fragment {
         DefaultJson.put(params,"newOnly", favorites ? false : newOnly);
         DefaultJson.put(params,"favorites", favorites);
 
-        setFilter(params, favorites ? false : newOnly);
+        setFilter(params, favorites ? false : newOnly, "");
 
         setOrder(params);
 
@@ -953,12 +1025,17 @@ public class FirstFragment extends Fragment {
 
     }
 
-    private void setFilter(JSONObject params, Boolean newOnly) {
+    private void setFilter(JSONObject params, Boolean newOnly, String search) {
 
         JSONArray jsonArray = new JSONArray();
 
         if (newOnly){
             jsonArray.put(" requests.song_id is null ");
+
+        }
+
+        if (!search.isEmpty()){
+            jsonArray.put(" files.name like '%" + search + "%'");
 
         }
 
