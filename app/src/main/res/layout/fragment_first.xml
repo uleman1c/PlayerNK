@@ -140,7 +140,7 @@
                 android:background="@null"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@mipmap/no_foto_foreground" />
+                app:srcCompat="@mipmap/foto_cur_foreground" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
