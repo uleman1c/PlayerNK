@@ -13,11 +13,15 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -245,6 +249,67 @@ public class FirstFragment extends Fragment {
 
         appCompatActivity.getSupportActionBar().setTitle("");
 
+
+        Spinner spinnerModes = binding.getRoot().findViewById(R.id.spinnerModes);
+
+        ArrayAdapter<CharSequence> adapter= new ArrayAdapter<CharSequence>(getContext(), R.layout.modes_spinner_selected_item,
+                        android.R.id.text1,
+                        getActivity().getResources().getStringArray(R.array.modes));
+        adapter.setDropDownViewResource(R.layout.modes_spinner_item);
+
+        spinnerModes.setAdapter(adapter);
+        spinnerModes.setDropDownVerticalOffset(60);
+
+        spinnerModes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                ((TextView)spinnerModes.getSelectedView().findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.white));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                ((TextView)spinnerModes.getSelectedView().findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.white));
+            }
+        });
+
+        spinnerModes.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
+                    ((TextView)spinnerModes.getSelectedView().findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.colorAccent));
+                }
+
+
+                return false;
+            }
+        });
+
+//        spinnerModes.
+
+//        spinnerModes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//                String s = "";
+//
+//            }
+//        });
+//        spinnerModes.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                String s = "";
+//
+//            }
+//        });
+
+
+
+
         return binding.getRoot();
 
     }
@@ -264,10 +329,6 @@ public class FirstFragment extends Fragment {
 
         setTextAndButtons();
 
-        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getContext(), R.array.modes, R.layout.modes_spinner_selected_item);
-        adapter.setDropDownViewResource(R.layout.modes_spinner_item);
-
-        binding.spinnerModes.setAdapter(adapter);
 
         binding.ibSearch.setOnClickListener(new View.OnClickListener() {
             @Override
