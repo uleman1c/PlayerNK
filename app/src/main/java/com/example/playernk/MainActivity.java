@@ -34,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
         createNotificationChannel();
 
         Intent intent = new Intent(getBaseContext(), BackgroundSoundService.class);
-        startForegroundService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }
 
         DB.onStart(getBaseContext());
 

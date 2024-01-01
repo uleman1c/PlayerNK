@@ -29,4 +29,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="playernk_channel">PlayerNK_Channel</string>
 
+    <string-array name="modes">
+        <item>Random mode</item>
+        <item>Author mode</item>
+        <item>Album mode</item>
+    </string-array>
+
+
 </resources>

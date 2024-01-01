@@ -15,11 +15,14 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.fragment.NavHostFragment;
@@ -235,7 +238,12 @@ public class FirstFragment extends Fragment {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
 
+        Toolbar toolbar = binding.toolbar2;
 
+        AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+        appCompatActivity.setSupportActionBar(toolbar);
+
+        appCompatActivity.getSupportActionBar().setTitle("");
 
         return binding.getRoot();
 
@@ -255,6 +263,21 @@ public class FirstFragment extends Fragment {
         binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
 
         setTextAndButtons();
+
+        ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getContext(), R.array.modes, R.layout.modes_spinner_selected_item);
+        adapter.setDropDownViewResource(R.layout.modes_spinner_item);
+
+        binding.spinnerModes.setAdapter(adapter);
+
+        binding.ibSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //binding.clSearch.setVisibility(View.VISIBLE);
+
+
+            }
+        });
 
         songsAdapter.setOnItemClickListener(new SongsAdapter.OnItemClickListener() {
             @Override
@@ -305,7 +328,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+        binding.ibLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -453,7 +476,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        binding.btnFavorites.setOnClickListener(new View.OnClickListener() {
+        binding.ibFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
