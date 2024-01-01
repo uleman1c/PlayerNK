@@ -334,7 +334,10 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                //binding.clSearch.setVisibility(View.VISIBLE);
+                binding.spinnerModes.setVisibility(View.GONE);
+                binding.ibSearch.setVisibility(View.GONE);
+
+                binding.clSearch.setVisibility(View.VISIBLE);
 
 
             }
