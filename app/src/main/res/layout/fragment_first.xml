@@ -10,7 +10,7 @@
         android:id="@+id/toolbar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="#290138"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,11 +20,12 @@
 
     <ImageButton
         android:id="@+id/ibLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
         android:layout_marginStart="16dp"
         android:background="@null"
-        android:src="@drawable/sharp_account_balance_24"
+        android:scaleType="fitXY"
+        android:src="@drawable/q_logo"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintStart_toStartOf="@+id/toolbar2"
         app:layout_constraintTop_toTopOf="@+id/toolbar2" />
@@ -46,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="@null"
-        android:src="?android:attr/actionModeWebSearchDrawable"
+        android:src="@drawable/search"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintEnd_toStartOf="@+id/ibFav"
         app:layout_constraintTop_toTopOf="@+id/toolbar2" />
@@ -57,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="@null"
-        android:src="@android:drawable/btn_star"
+        android:src="@drawable/star"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintEnd_toStartOf="@+id/ibLogin"
         app:layout_constraintTop_toTopOf="@+id/toolbar2" />
@@ -67,8 +68,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:background="@null"
-        android:src="@drawable/outline_account_circle_24"
+        android:background="#3F035B"
+        android:padding="8sp"
+        android:src="@drawable/account"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintEnd_toEndOf="@+id/toolbar2"
         app:layout_constraintTop_toTopOf="@+id/toolbar2" />
@@ -89,9 +91,8 @@
             android:id="@+id/ibSearch2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:background="@null"
-            android:src="?android:attr/actionModeWebSearchDrawable"
+            android:src="@drawable/search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
