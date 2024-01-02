@@ -593,6 +593,13 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.ibPlayPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SetPauseBackground();
+            }
+        });
         binding.btnResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
