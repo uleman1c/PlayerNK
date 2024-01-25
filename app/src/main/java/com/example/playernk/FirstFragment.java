@@ -81,6 +81,8 @@ public class FirstFragment extends Fragment {
 
     private BroadcastReceiver broadcastReceiver;
 
+    Boolean playing;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -665,7 +667,7 @@ public class FirstFragment extends Fragment {
         });
 
 
-        binding.btnBackward.setOnClickListener(new View.OnClickListener() {
+        binding.ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -674,7 +676,7 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        binding.btnForward.setOnClickListener(new View.OnClickListener() {
+        binding.ibForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -786,6 +788,8 @@ public class FirstFragment extends Fragment {
 
     private void PlaySongBackground(String curSongid, Boolean aquare){
 
+        playing = true;
+
         Intent intent = new Intent();
         intent.putExtra("command", "playSong");
         intent.putExtra("songId", curSongid);
@@ -816,9 +820,13 @@ public class FirstFragment extends Fragment {
     private void SetPauseBackground(){
 
         Intent intent = new Intent();
-        intent.putExtra("command", "pause");
+        binding.ibPlayPause.setImageResource(playing ? R.drawable.play : R.drawable.pause);
+
+        intent.putExtra("command", playing ? "pause" : "resume");
 
         SendTaskToBackGround(intent);
+
+        playing = !playing;
 
     }
 
@@ -840,7 +848,7 @@ public class FirstFragment extends Fragment {
 
         rvList.scrollToPosition(curSongIndex == 0 ? 0 : curSongIndex + 3);
 
-        //binding.textviewNameSong.setText(curSong.name);
+        binding.tvDescription.setText(curSong.name);
 
         lastStart = new Date();
 
