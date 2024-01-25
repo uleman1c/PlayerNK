@@ -268,7 +268,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                ((TextView)spinnerModes.getSelectedView().findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.white));
+                View selected = spinnerModes.getSelectedView();
+                if (selected != null)
+                    ((TextView)selected.findViewById(android.R.id.text1)).setTextColor(getResources().getColor(R.color.white));
             }
 
             @Override
