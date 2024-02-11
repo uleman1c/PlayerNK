@@ -76,8 +76,12 @@ public class BackgroundSoundService extends Service {
 
                 if (command.equals("pause")){
 
-                    if (mediaPlayer.isPlaying())
                         mediaPlayer.pause();
+
+                }
+                else if (command.equals("resume")){
+
+                        mediaPlayer.start();
 
                 }
                 else if (command.equals("start")) {
