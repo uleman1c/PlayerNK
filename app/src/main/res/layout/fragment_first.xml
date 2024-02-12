@@ -358,11 +358,10 @@
 
         <Button
             android:id="@+id/btnAqu"
-            style="@style/Widget.AppCompat.Button"
+            style="@style/TransparentButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="0sp"
-            android:background="@drawable/aqu_button"
             android:insetTop="0sp"
             android:insetBottom="0sp"
             android:minWidth="43dip"
