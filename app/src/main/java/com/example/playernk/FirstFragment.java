@@ -629,6 +629,8 @@ public class FirstFragment extends Fragment {
 
                 favorites = !favorites;
 
+                binding.ibFav.setImageResource(favorites ? R.drawable.star_fill : R.drawable.star);
+
                 DB db = new DB(getContext());
 
                 db.open();
