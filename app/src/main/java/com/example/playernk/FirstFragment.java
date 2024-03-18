@@ -58,7 +58,7 @@ public class FirstFragment extends Fragment {
     AudioManager am;
     CheckBox chbLoop;
 
-    Boolean aquare, random, startPlay, newOnly, favorites;
+    Boolean aquare = false, random = false, startPlay = false, newOnly = false, favorites = false;
 
     Date lastStart;
 
@@ -81,7 +81,7 @@ public class FirstFragment extends Fragment {
 
     private BroadcastReceiver broadcastReceiver;
 
-    Boolean playing;
+    Boolean playing = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -835,14 +835,16 @@ public class FirstFragment extends Fragment {
 
     private void SetPauseBackground(){
 
-        Intent intent = new Intent();
-        binding.ibPlayPause.setImageResource(playing ? R.drawable.play : R.drawable.pause);
+        Boolean isPlaying = playing != null && playing == true;
 
-        intent.putExtra("command", playing ? "pause" : "resume");
+        Intent intent = new Intent();
+        binding.ibPlayPause.setImageResource(isPlaying ? R.drawable.play : R.drawable.pause);
+
+        intent.putExtra("command", isPlaying ? "pause" : "resume");
 
         SendTaskToBackGround(intent);
 
-        playing = !playing;
+        playing = !isPlaying;
 
     }
 
