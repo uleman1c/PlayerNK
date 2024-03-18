@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,12 +29,17 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         private TextView tvDescription;
         private TextView tvStyle, tvNumber;
 
+        private ImageView ivCurSongFav;
+        private ConstraintLayout ll4;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             tvStyle = (TextView) itemView.findViewById(R.id.tvStyle);
             tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
+            ivCurSongFav = itemView.findViewById(R.id.ivCurSongFav);
+            ll4 = itemView.findViewById(R.id.linearLayout4);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,19 +97,14 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         holder.tvDescription.setText(song.name + "." + song.ext);
         holder.tvStyle.setText(song.style);
 
-//        if (song.nowPlaying){
-//            holder.tvStyle.setBackgroundColor(Color.parseColor("#3CB371"));
-//        } else {
-//            holder.tvStyle.setBackgroundColor(Color.parseColor("#FFFFFF"));
-//
-//        }
+        if (song.nowPlaying){
+            holder.ll4.setBackgroundColor(Color.parseColor("#FF581971"));
+        } else {
+            holder.ll4.setBackgroundColor(Color.parseColor("#FF1D0129"));
 
-//        if (song.favorite){
-//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFEB3B"));
-//        } else {
-//            holder.tvDescription.setBackgroundColor(Color.parseColor("#FFFFFF"));
-//
-//        }
+        }
+
+        holder.ivCurSongFav.setVisibility(song.favorite ? View.VISIBLE : View.GONE);
 
 
 

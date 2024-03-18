@@ -349,6 +349,8 @@ public class FirstFragment extends Fragment {
 
                 curSongIndex = songs.indexOf(song);
 
+                song.nowPlaying = true;
+
                 PlaySong();
 
             }
