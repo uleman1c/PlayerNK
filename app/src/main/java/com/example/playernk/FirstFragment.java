@@ -153,7 +153,7 @@ public class FirstFragment extends Fragment {
                 }
 
                 if (foundSongIndex == -1){
-                    songs.add(new Song(id, name, ext, style, description, false ));
+                    songs.add(new Song(id, name, ext, style, description, false, false));
 
                     foundSongIndex = songs.size() - 1;
                 }
@@ -675,7 +675,18 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                SetSeekToBackground(-3000);
+                //SetSeekToBackground(-3000);
+
+                curSongIndex = curSongIndex - 1;
+
+                if (curSongIndex == -1){
+
+                    curSongIndex = songs.size() - 1;
+
+                }
+
+                PlaySong();
+
 
             }
         });
@@ -684,7 +695,8 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                SetSeekToBackground(3000);
+                //SetSeekToBackground(3000);
+                NextSong();
 
             }
         });
@@ -847,6 +859,7 @@ public class FirstFragment extends Fragment {
         }
 
         curSong.nowPlaying = true;
+        curSong.isNew = false;
 
         songsAdapter.notifyDataSetChanged();
 

@@ -29,7 +29,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         private TextView tvDescription;
         private TextView tvStyle, tvNumber;
 
-        private ImageView ivCurSongFav;
+        private ImageView ivCurSongFav, ivCurSongImageSound;
         private ConstraintLayout ll4;
 
         public ItemViewHolder(View itemView) {
@@ -39,6 +39,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
             tvStyle = (TextView) itemView.findViewById(R.id.tvStyle);
             tvNumber = (TextView) itemView.findViewById(R.id.tvNumber);
             ivCurSongFav = itemView.findViewById(R.id.ivCurSongFav);
+            ivCurSongImageSound = itemView.findViewById(R.id.ivCurSongImageSound);
             ll4 = itemView.findViewById(R.id.linearLayout4);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +106,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.ItemViewHold
         }
 
         holder.ivCurSongFav.setVisibility(song.favorite ? View.VISIBLE : View.GONE);
+        holder.ivCurSongImageSound.setVisibility(!song.isNew ? View.VISIBLE : View.GONE);
 
 
 

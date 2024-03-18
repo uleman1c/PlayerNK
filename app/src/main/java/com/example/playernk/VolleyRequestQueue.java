@@ -57,6 +57,7 @@ public class VolleyRequestQueue {
 
         try {
             params.put("appId", DB.getDbConstant(ctx,"appId"));
+            params.put("userId", DB.getDbConstant(ctx,"userId"));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
