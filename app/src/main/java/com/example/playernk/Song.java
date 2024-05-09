@@ -9,15 +9,16 @@ import java.util.ArrayList;
 public class Song {
 
     public String id, name, ext, style, description;
-    public Boolean nowPlaying, favorite;
+    public Boolean nowPlaying, favorite, isNew;
 
-    public Song(String id, String name, String ext, String style, String description, Boolean favorite) {
+    public Song(String id, String name, String ext, String style, String description, Boolean favorite, Boolean isNew) {
         this.id = id;
         this.name = name;
         this.ext = ext;
         this.style = style;
         this.description = description;
         this.favorite = favorite;
+        this.isNew = isNew;
 
         this.nowPlaying = false;
     }
@@ -32,7 +33,8 @@ public class Song {
                 DefaultJson.getString(jsonObject, "ext", ""),
                 DefaultJson.getString(jsonObject, "style", ""),
                 DefaultJson.getString(jsonObject, "description", ""),
-                DefaultJson.getBoolean(jsonObject, "favorite", false)
+                DefaultJson.getBoolean(jsonObject, "favorite", false),
+                DefaultJson.getBoolean(jsonObject, "new", false)
                 );
 
     }
