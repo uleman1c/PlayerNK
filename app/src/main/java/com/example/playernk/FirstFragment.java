@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -534,6 +535,34 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        binding.ibShuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String curId = songs.get(curSongIndex).id;
+
+                Collections.shuffle(songs);
+
+                Boolean found = false;
+                Integer curS = 0;
+                while (!found && curS < songs.size()){
+
+                    found = songs.get(curS).id.equals(curId);
+
+                    curS = curS + 1;
+
+                }
+
+                curSongIndex = curS - 1;
+
+                songsAdapter.notifyDataSetChanged();
+
+                rvList.scrollToPosition(curSongIndex == 0 ? 0 : (curSongIndex + 3 < songs.size() ? curSongIndex + 3 : songs.size() ));
+
+
+
+            }
+        });
 
         binding.btnAqu.setOnClickListener(new View.OnClickListener() {
             @Override
