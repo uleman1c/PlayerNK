@@ -286,6 +286,7 @@
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/llUser"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clCurSong"
         app:layout_constraintVertical_bias="1.0">
@@ -357,18 +358,18 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <Button
+        <ImageButton
             android:id="@+id/btnAqu"
             style="@style/TransparentButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="0sp"
+            android:background="@drawable/aqu_off"
             android:insetTop="0sp"
             android:insetBottom="0sp"
             android:minWidth="43dip"
             android:minHeight="29dip"
             android:padding="0sp"
-            android:text="AQU"
             android:textColor="#AE99B7"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

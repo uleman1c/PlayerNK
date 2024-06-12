@@ -7,9 +7,11 @@
     <style name="QPlayer">QPlayer</style>
 
 
-    <style name="TransparentButtonStyle" >
+    <style name="TransparentButtonStyle2" >
         <item name="android:background">@drawable/aqu_button</item>
     </style>
 
+    <style name="TransparentButtonStyle" >
+    </style>
 
 </resources>

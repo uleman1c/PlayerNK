@@ -56,9 +56,7 @@ public class FirstFragment extends Fragment {
 
     //MediaPlayer mediaPlayer;
     AudioManager am;
-    CheckBox chbLoop;
-
-    Boolean aquare = false, random = false, startPlay = false, newOnly = false, favorites = false;
+    Boolean aquare = false, loop = false, random = false, startPlay = false, newOnly = false, favorites = false;
 
     Date lastStart;
 
@@ -118,6 +116,9 @@ public class FirstFragment extends Fragment {
         newOnly = db.getConstant("newOnly").equals("true");
 
         favorites = db.getConstant("favorites").equals("true");
+
+        loop = db.getConstant("loop").equals("true");
+
 
         aquare = db.getConstant("aquare").equals("true");
 
@@ -304,14 +305,15 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         am = (AudioManager) getActivity().getSystemService(AUDIO_SERVICE);
-        chbLoop = binding.chbLoop;
 
         rvList = binding.rvList;
 
         rvList.setAdapter(songsAdapter);
 
-        binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+        binding.btnAqu.setImageResource(aquare ? R.drawable.aqu_on : R.drawable.aqu_off);
         binding.btnFavorites.setBackgroundColor(favorites ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
+
+        binding.ibLoop.setImageResource(loop ? R.drawable.loop_on : R.drawable.loop);
 
         setTextAndButtons();
 
@@ -520,17 +522,20 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        chbLoop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.ibLoop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
+            public void onClick(View view) {
 
-                SetLoopBackground(isChecked);
+                loop = !loop;
 
+                binding.ibLoop.setImageResource(loop ? R.drawable.loop_on : R.drawable.loop);
+
+                SetLoopBackground(loop);
             }
         });
 
-        binding.btnAquare.setOnClickListener(new View.OnClickListener() {
+
+        binding.btnAqu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -544,9 +549,7 @@ public class FirstFragment extends Fragment {
 
                 db.close();
 
-                binding.btnAquare.setBackgroundColor(aquare ? Color.parseColor("#00FF00") : Color.parseColor("#0000FF"));
-
-                SetAquareBackground(aquare);
+                binding.btnAqu.setImageResource(aquare ? R.drawable.aqu_on : R.drawable.aqu_off);
 
             }
         });

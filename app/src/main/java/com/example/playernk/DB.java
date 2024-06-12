@@ -515,6 +515,14 @@ public class DB {
 
         }
 
+        String loop = db.getConstant("loop");
+        if (loop == null) {
+
+            loop = "false";
+            db.updateConstant("loop", loop);
+
+        }
+
         String aquareStart = db.getConstant("aquareStart");
         if (aquareStart == null) {
 
